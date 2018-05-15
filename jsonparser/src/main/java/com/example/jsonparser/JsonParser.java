@@ -3,6 +3,7 @@ package com.example.jsonparser;
 import android.support.annotation.IntDef;
 import android.util.JsonReader;
 import android.util.JsonToken;
+import android.util.Log;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -16,8 +17,25 @@ import java.util.List;
  */
 public class JsonParser {
 
+    private static final String TAG = "JsonParser";
+
     /**
-     * 用于定位元素
+     * 用于设置是否开启调试
+     */
+    private static boolean LOG;
+
+
+    /**
+     * @param printLog : true: 解析时将会输出log
+     */
+    public static void log(boolean printLog) {
+
+        JsonParser.LOG = printLog;
+    }
+
+
+    /**
+     * 用于定位元素,可以根据list中的node定位到元素
      */
     private List< Node > mNodeTree = new ArrayList<>();
 
@@ -32,12 +50,12 @@ public class JsonParser {
     private static final int TOKEN_BEGIN_ARRAY  = 11;
     private static final int TOKEN_END_ARRAY    = 13;
     /**
-     * 记录上一次操作
+     * 记录上一次操作,需要再解析时分析操作
      */
     private int mLastToken;
 
     /**
-     * 记录读取的值
+     * 记录读取的值,不断复用
      */
     private ValueHolder mValueHolder = new ValueHolder();
 
@@ -57,21 +75,55 @@ public class JsonParser {
     public @interface NodeTypes {
     }
 
+    /**
+     * 标记array是什么类型,true:array元素全是object,false:array元素全部是值类型
+     */
+    private boolean isObjectArray;
 
+
+    /**
+     * 使用{@link #create(OnParseListener)}创建,不要自己直接创建
+     *
+     * @param onParseListener 监听过程
+     */
     private JsonParser(OnParseListener onParseListener) {
 
         mOnParseListener = onParseListener;
     }
 
 
+    /**
+     * @param reader 解析json
+     */
     public void parse(Reader reader) {
 
+        parse(reader, false);
+    }
+
+
+    /**
+     * @param reader 解析格式不标准的json
+     */
+    public void parseLenient(Reader reader) {
+
+        parse(reader, true);
+    }
+
+
+    private void parse(Reader reader, boolean lenient) {
+
         JsonReader jsonReader = new JsonReader(reader);
+
+        if (lenient) {
+            jsonReader.setLenient(true);
+        }
 
         try {
 
             JsonToken peek = jsonReader.peek();
             while (peek != JsonToken.END_DOCUMENT) {
+
+                Node node = null;
 
                 switch (peek) {
 
@@ -81,22 +133,57 @@ public class JsonParser {
 
                         if (mLastToken == TOKEN_NAME) {
 
-                            mNodeTree.get(mNodeTree.size() - 1).type = OBJECT;
+                            node = mNodeTree.get(mNodeTree.size() - 1);
+                            node.type = OBJECT;
 
+                        } else if (mLastToken == TOKEN_BEGIN_ARRAY || mLastToken == TOKEN_END_OBJECT) {
+
+                            isObjectArray = true;
+
+                            int size = mNodeTree.size();
+                            node = mNodeTree.get(size - 1);
+                            if (node.type == ARRAY) {
+                                node.index += 1;
+                            }
+                        }
+
+                        if (node != null) {
+                            int type = node.type;
+                            if (type == OBJECT) {
+
+                                mOnParseListener.onNewObjectRequire(mNodeTree);
+
+                            } else if (type == ARRAY) {
+
+                                mOnParseListener.onNewArrayElementRequire(mNodeTree);
+
+                            }
                         }
 
                         mLastToken = TOKEN_BEGIN_OBJECT;
+
+                        if (LOG) {
+                            Log.i(TAG, "BEGIN_OBJECT");
+                        }
+
                         break;
 
                     case BEGIN_ARRAY:
                         jsonReader.beginArray();
 
                         if (mLastToken == TOKEN_NAME) {
-                            Node node = mNodeTree.get(mNodeTree.size() - 1);
+                            node = mNodeTree.get(mNodeTree.size() - 1);
                             node.type = ARRAY;
                         }
 
                         mLastToken = TOKEN_BEGIN_ARRAY;
+
+                        mOnParseListener.onNewArrayRequire(mNodeTree);
+
+                        if (LOG) {
+                            Log.i(TAG, "BEGIN_ARRAY");
+                        }
+
                         break;
 
                     case NAME:
@@ -106,17 +193,16 @@ public class JsonParser {
 
                             mNodeTree.add(new Node());
 
-                            int size = mNodeTree.size();
-                            if (size >= 2) {
-                                Node node = mNodeTree.get(size - 2);
-                                if (node.type == ARRAY) {
-                                    node.index += 1;
-                                }
-                            }
                         }
+
                         mNodeTree.get(mNodeTree.size() - 1).name = currentNodeName;
 
                         mLastToken = TOKEN_NAME;
+
+                        if (LOG) {
+                            Log.i(TAG, "parseToName: " + currentNodeName);
+                        }
+
                         break;
 
                     /* consume */
@@ -126,6 +212,15 @@ public class JsonParser {
                         setNullValue(mValueHolder);
                         parseToValue();
                         mLastToken = TOKEN_VALUE;
+
+                        if (LOG) {
+                            Log.i(TAG, "parseToValue: "
+                                    + mNodeTree
+                                    + " key: " + mNodeTree.get(mNodeTree.size() - 1).name
+                                    + " value: " + null
+                            );
+                        }
+
                         break;
 
                     case STRING:
@@ -133,6 +228,15 @@ public class JsonParser {
                         setStringValue(mValueHolder, string);
                         parseToValue();
                         mLastToken = TOKEN_VALUE;
+
+                        if (LOG) {
+                            Log.i(TAG, "parseToValue: "
+                                    + mNodeTree
+                                    + " key: " + mNodeTree.get(mNodeTree.size() - 1).name
+                                    + " value: " + string
+                            );
+                        }
+
                         break;
 
                     case BOOLEAN:
@@ -140,6 +244,15 @@ public class JsonParser {
                         setBooleanValue(mValueHolder, booleanValue);
                         parseToValue();
                         mLastToken = TOKEN_VALUE;
+
+                        if (LOG) {
+                            Log.i(TAG, "parseToValue: "
+                                    + mNodeTree
+                                    + " key: " + mNodeTree.get(mNodeTree.size() - 1).name
+                                    + " value: " + booleanValue
+                            );
+                        }
+
                         break;
 
                     case NUMBER:
@@ -147,17 +260,30 @@ public class JsonParser {
                         setNumberValue(mValueHolder, doubleValue);
                         parseToValue();
                         mLastToken = TOKEN_VALUE;
+
+                        if (LOG) {
+                            Log.i(TAG, "parseToValue: "
+                                    + mNodeTree
+                                    + " key: " + mNodeTree.get(mNodeTree.size() - 1).name
+                                    + " value: " + doubleValue
+                            );
+                        }
+
                         break;
 
                     case END_ARRAY:
                         jsonReader.endArray();
 
-                        if (mLastToken == TOKEN_VALUE) {
+                        mNodeTree.get(mNodeTree.size() - 1).index = -1;
 
-                            mNodeTree.get(mNodeTree.size() - 1).index = -1;
-                        }
+                        isObjectArray = false;
 
                         mLastToken = TOKEN_END_ARRAY;
+
+                        if (LOG) {
+                            Log.i(TAG, "END_ARRAY");
+                        }
+
                         break;
 
                     case END_OBJECT:
@@ -166,6 +292,11 @@ public class JsonParser {
                         mNodeTree.remove(mNodeTree.size() - 1);
 
                         mLastToken = TOKEN_END_OBJECT;
+
+                        if (LOG) {
+                            Log.i(TAG, "END_OBJECT");
+                        }
+
                         break;
 
                     default:
@@ -187,6 +318,7 @@ public class JsonParser {
                 e.printStackTrace();
             }
         }
+
     }
 
 
@@ -199,8 +331,8 @@ public class JsonParser {
             node.type = VALUE;
 
         } else if (mLastToken == TOKEN_VALUE || mLastToken == TOKEN_BEGIN_ARRAY) {
-
             node.index += 1;
+            mOnParseListener.onNewArrayElementRequire(mNodeTree);
         }
 
         mOnParseListener.onParseTo(mNodeTree, node.name, mValueHolder);
@@ -211,7 +343,7 @@ public class JsonParser {
     /**
      * 节点,用来定位元素位置
      */
-    private static class Node {
+    public static class Node {
 
         public String name;
         @NodeTypes
@@ -261,6 +393,33 @@ public class JsonParser {
          */
         void onParseTo(List< Node > nodes, String key, ValueHolder valueHolder);
 
+
+        /**
+         * 当新解析到一个Object对象时回调该方法
+         *
+         * @param nodes object位置
+         */
+        default void onNewObjectRequire(List< Node > nodes) {
+
+        }
+
+        /**
+         * 当解析到一个新的数组时,回调该方法
+         *
+         * @param nodes object 位置
+         */
+        default void onNewArrayRequire(List< Node > nodes) {
+
+        }
+
+        /**
+         * 当新解析到一个Object对象时回调该方法
+         *
+         * @param nodes object位置
+         */
+        default void onNewArrayElementRequire(List< Node > nodes) {
+
+        }
     }
 
     //============================ set Holder value ============================

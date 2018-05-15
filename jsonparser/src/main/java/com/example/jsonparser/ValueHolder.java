@@ -6,7 +6,7 @@ import android.util.JsonToken;
  * @author wuxio 2018-05-14:17:57
  */
 @SuppressWarnings("AlibabaLowerCamelCaseVariableNaming")
-class ValueHolder {
+public class ValueHolder {
 
     private String  stringValue;
     private double  doubleValue;
