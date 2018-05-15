@@ -1,5 +1,6 @@
 package com.example.wuxio.jsonparserlib.bean;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -11,6 +12,13 @@ public class WeatherBean {
     private String     status;
     private String     msg;
     private ResultBean result;
+
+
+    public WeatherBean() {
+
+        ResultBean resultBean = new ResultBean();
+
+    }
 
 
     public String getStatus() {
@@ -71,6 +79,15 @@ public class WeatherBean {
         private List< IndexBean >  index;
         private List< DailyBean >  daily;
         private List< HourlyBean > hourly;
+
+
+        public ResultBean() {
+
+            index = new ArrayList<>();
+            daily = new ArrayList<>();
+            hourly = new ArrayList<>();
+            aqi = new AqiBean();
+        }
 
 
         public String getCity() {
@@ -340,6 +357,12 @@ public class WeatherBean {
             private String      quality;
             private String      timepoint;
             private AqiinfoBean aqiinfo;
+
+
+            public AqiBean() {
+
+                aqiinfo = new AqiinfoBean();
+            }
 
 
             public String getSo2() {
@@ -753,6 +776,14 @@ public class WeatherBean {
             private String    sunset;
             private NightBean night;
             private DayBean   day;
+
+
+            public DailyBean() {
+
+                night = new NightBean();
+                day = new DayBean();
+
+            }
 
 
             public String getDate() {
