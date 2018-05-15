@@ -1,1 +1,1 @@
-include ':app', ':jsonparser', ':parser-compiler', ':parser-annotation'
+include ':app', ':parser-compiler', ':parser-annotation'
