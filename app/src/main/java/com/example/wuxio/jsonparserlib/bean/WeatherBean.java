@@ -16,7 +16,7 @@ public class WeatherBean {
 
     public WeatherBean() {
 
-        ResultBean resultBean = new ResultBean();
+        result = new ResultBean();
 
     }
 
@@ -83,10 +83,10 @@ public class WeatherBean {
 
         public ResultBean() {
 
+            aqi = new AqiBean();
             index = new ArrayList<>();
             daily = new ArrayList<>();
             hourly = new ArrayList<>();
-            aqi = new AqiBean();
         }
 
 
