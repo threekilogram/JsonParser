@@ -1,4 +1,4 @@
-package com.example.wuxio.jsonparserlib;
+package com.example.jsonparser;
 
 import android.util.JsonToken;
 
