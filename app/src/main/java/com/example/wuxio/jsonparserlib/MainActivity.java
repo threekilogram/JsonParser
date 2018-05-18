@@ -11,8 +11,6 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.example.jsonparser.JsonParser;
 import com.example.wuxio.jsonparserlib.bean.WeatherBean;
 import com.example.wuxio.jsonparserlib.json.WeatherJson;
@@ -63,7 +61,6 @@ public class MainActivity extends AppCompatActivity {
                                 testGson();
                                 break;
                             case R.id.menu02:
-                                testFastJson();
                                 break;
                             default:
                                 break;
@@ -119,23 +116,4 @@ public class MainActivity extends AppCompatActivity {
         new Thread(runnable).start();
     }
 
-    private void testFastJson() {
-
-        Runnable runnable = new Runnable() {
-
-            @Override
-            public void run() {
-
-
-                long start = System.currentTimeMillis();
-                for (int i = 0; i < 100000; i++) {
-                    JSONObject object = JSON.parseObject(WeatherJson.JSON);
-                }
-                long end = System.currentTimeMillis();
-                Log.i(TAG, "testGson:" + (end - start));
-            }
-        };
-
-        new Thread(runnable).start();
-    }
 }

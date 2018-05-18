@@ -28,7 +28,6 @@ dependencies {
     implementation project(':jsonparser')
 
     implementation 'com.google.code.gson:gson:2.8.4'
-    implementation 'com.alibaba:fastjson:1.1.68.android'
     implementation 'com.android.support:design:27.1.1'
 }
 
