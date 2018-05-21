@@ -12,9 +12,9 @@ import android.view.MenuItem;
 import android.widget.FrameLayout;
 
 import com.example.jsonparser.JsonParser;
-import com.example.wuxio.jsonparserlib.bean.WeatherBean;
-import com.example.wuxio.jsonparserlib.json.WeatherJson;
-import com.example.wuxio.jsonparserlib.listener.WeatherParseListener;
+import com.example.wuxio.jsonparserlib.bean.GankBean;
+import com.example.wuxio.jsonparserlib.json.GankJson;
+import com.example.wuxio.jsonparserlib.listener.GankBeanParseListener;
 
 import java.io.StringReader;
 
@@ -79,10 +79,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
 
+                JsonParser parser = JsonParser.create(new GankBeanParseListener());
+                //JsonParser.log(true);
+
                 long start = System.currentTimeMillis();
-                for (int i = 0; i < 100000; i++) {
-                    JsonParser parser = JsonParser.create(new WeatherParseListener());
-                    StringReader reader = new StringReader(WeatherJson.JSON);
+                for (int i = 0; i < 1; i++) {
+                    StringReader reader = new StringReader(GankJson.JSON);
                     parser.parse(reader);
                 }
                 long end = System.currentTimeMillis();
@@ -104,9 +106,9 @@ public class MainActivity extends AppCompatActivity {
                 Gson gson = new Gson();
 
                 long start = System.currentTimeMillis();
-                for (int i = 0; i < 100000; i++) {
-                    StringReader reader = new StringReader(WeatherJson.JSON);
-                    WeatherBean bean = gson.fromJson(reader, WeatherBean.class);
+                for (int i = 0; i < 10; i++) {
+                    StringReader reader = new StringReader(GankJson.JSON);
+                    GankBean bean = gson.fromJson(reader, GankBean.class);
                 }
                 long end = System.currentTimeMillis();
                 Log.i(TAG, "testGson:" + (end - start));

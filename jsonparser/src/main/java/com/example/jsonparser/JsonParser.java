@@ -131,7 +131,15 @@ public class JsonParser {
 
                         jsonReader.beginObject();
 
-                        if (mLastToken == TOKEN_NAME) {
+                        if (mLastToken == 0) {
+
+                            mOnParseListener.onBegin();
+
+                            if (LOG) {
+                                Log.i(TAG, "BEGIN_PARSE");
+                            }
+
+                        } else if (mLastToken == TOKEN_NAME) {
 
                             node = mNodeTree.get(mNodeTree.size() - 1);
                             node.type = OBJECT;
@@ -141,9 +149,11 @@ public class JsonParser {
                             isObjectArray = true;
 
                             int size = mNodeTree.size();
-                            node = mNodeTree.get(size - 1);
-                            if (node.type == ARRAY) {
-                                node.index += 1;
+                            if (size > 0) {
+                                node = mNodeTree.get(size - 1);
+                                if (node.type == ARRAY) {
+                                    node.index += 1;
+                                }
                             }
                         }
 
@@ -153,9 +163,17 @@ public class JsonParser {
 
                                 mOnParseListener.onNewObjectRequire(mNodeTree);
 
+                                if (LOG) {
+                                    Log.i(TAG, "parse:" + "NewObjectRequire :" + mNodeTree);
+                                }
+
                             } else if (type == ARRAY) {
 
                                 mOnParseListener.onNewArrayElementRequire(mNodeTree);
+
+                                if (LOG) {
+                                    Log.i(TAG, "parse:" + "NewArrayElementRequire :" + mNodeTree);
+                                }
 
                             }
                         }
@@ -181,7 +199,7 @@ public class JsonParser {
                         mOnParseListener.onNewArrayRequire(mNodeTree);
 
                         if (LOG) {
-                            Log.i(TAG, "BEGIN_ARRAY");
+                            Log.i(TAG, "BEGIN_ARRAY_NewArrayRequire :" + mNodeTree);
                         }
 
                         break;
@@ -319,6 +337,10 @@ public class JsonParser {
             }
         }
 
+        mOnParseListener.onFinished();
+        if (LOG) {
+            Log.i(TAG, "parse:" + "PARSE_TO_END");
+        }
     }
 
 
@@ -367,9 +389,25 @@ public class JsonParser {
         @Override
         public String toString() {
 
+            String typeName = null;
+
+            if (type == VALUE) {
+
+                typeName = "VALUE";
+
+            } else if (type == OBJECT) {
+
+                typeName = "OBJECT";
+
+            } else if (type == ARRAY) {
+
+                typeName = "ARRAY";
+
+            }
+
             return "Node{" +
                     "name='" + name + '\'' +
-                    ", type=" + type +
+                    ", type=" + typeName +
                     ", index=" + index +
                     '}';
         }
@@ -383,6 +421,13 @@ public class JsonParser {
      * 监听解析过程
      */
     public interface OnParseListener {
+
+        /**
+         * 开始解析
+         */
+        default void onBegin() {
+
+        }
 
         /**
          * 监听解析过程,当解析到一个value时回调该方法
@@ -418,6 +463,13 @@ public class JsonParser {
          * @param nodes object位置
          */
         default void onNewArrayElementRequire(List< Node > nodes) {
+
+        }
+
+        /**
+         * 解析完成
+         */
+        default void onFinished() {
 
         }
     }

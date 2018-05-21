@@ -4,6 +4,6 @@
         android:layout_width="match_parent"
         android:src="@drawable/acat"
         android:scaleType="fitXY"
-        android:layout_height="212dp">
+        android:layout_height="180dp">
 
 </ImageView>
