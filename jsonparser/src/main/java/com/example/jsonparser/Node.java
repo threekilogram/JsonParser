@@ -61,6 +61,9 @@ public class Node {
     @interface NodeTypes {
     }
 
+    /**
+     * 修饰{@link #mType}
+     */
     @IntDef({VALUE_NUMBER_INT,
             VALUE_NUMBER_LONG,
             VALUE_NUMBER_FLOAT,
@@ -69,26 +72,75 @@ public class Node {
 
     }
 
+    /**
+     * 节点类型,根据json中的key对应的值来区分
+     *
+     * <br/>
+     * 如果key对应的是number类型,该节点类型将是{@link #VALUE_NUMBER_INT},{@link #VALUE_NUMBER_LONG},
+     * {@link #VALUE_NUMBER_FLOAT},{@link #VALUE_NUMBER_DOUBLE}其中之一,
+     * 具体由{@link JsonParserV2#setNumberType(int)}决定
+     *
+     * <br/>
+     * 如果key对应的是json string值,该节点类型将是{@link #VALUE_STRING}
+     *
+     * <br/>
+     * 如果key对应的是json null值,该节点类型将是{@link #VALUE_NULL}
+     *
+     * <br/>
+     * 如果key对应的是json boolean值,该节点类型将是{@link #NODE_OBJECT}
+     *
+     * <br/>
+     * 如果key对应的是json Object类型,该节点类型将是{@link #NODE_OBJECT}
+     *
+     * <br/>
+     * 如果key对应的是json array类型,该节点类型将是{@link #NODE_ARRAY}
+     */
     @NodeTypes
-    int type;
-    int mValueIndex = -1;
-    NodeTree parent;
+    private int mType;
+    /**
+     * 节点值在{@link ValueContainer}中的索引
+     */
+    private int mValueIndex = -1;
 
+    /**
+     * 该类管理整个json的值,包括json number值/json Object/ json array /string
+     */
     private ValueContainer mValueContainer;
 
 
-    void saveObject(ObjectNodeTree objectNode) {
+    Node(ValueContainer valueContainer) {
 
-        mValueIndex = mValueContainer.saveNodeTree(objectNode);
-        type = NODE_OBJECT;
+        mValueContainer = valueContainer;
     }
 
 
+    /**
+     * 该节点对应 json Object,将一个{@link ObjectNodeTree} 作为该节点的值
+     *
+     * @param objectNode 该节点的值
+     */
+    void asObject(ObjectNodeTree objectNode) {
+
+        mValueIndex = mValueContainer.saveNodeTree(objectNode);
+        mType = NODE_OBJECT;
+    }
+
+
+    /**
+     * @return 如果该节点对应 jsonObject; 那么返回 {@link ObjectNodeTree} ,如果不是对应jsonObject,返回null
+     */
     public ObjectNodeTree getObject() {
 
-        if (type == NODE_OBJECT) {
+        if (mType == NODE_OBJECT) {
 
-            return (ObjectNodeTree) mValueContainer.getNodeTree(mValueIndex);
+            try {
+
+                return (ObjectNodeTree) mValueContainer.getNodeTree(mValueIndex);
+            } catch (Exception e) {
+
+                e.printStackTrace();
+                return null;
+            }
         } else {
 
             if (JsonParserV2.DEBUG) {
@@ -100,18 +152,33 @@ public class Node {
     }
 
 
-    void saveArray(ArrayNodeTree arrayNodeTree) {
+    /**
+     * 该节点对应 json array ,将一个{@link ArrayNodeTree} 作为该节点的值
+     *
+     * @param arrayNodeTree 该节点的值
+     */
+    void asArray(ArrayNodeTree arrayNodeTree) {
 
         mValueIndex = mValueContainer.saveNodeTree(arrayNodeTree);
-        type = NODE_ARRAY;
+        mType = NODE_ARRAY;
     }
 
 
+    /**
+     * @return 如果该节点对应 json Array; 那么返回 {@link ArrayNodeTree} ,如果不是对应json Array,返回null
+     */
     public ArrayNodeTree getArray() {
 
-        if (type == NODE_ARRAY) {
+        if (mType == NODE_ARRAY) {
 
-            return (ArrayNodeTree) mValueContainer.getNodeTree(mValueIndex);
+            try {
+
+                return (ArrayNodeTree) mValueContainer.getNodeTree(mValueIndex);
+            } catch (Exception e) {
+
+                e.printStackTrace();
+                return null;
+            }
         } else {
 
             if (JsonParserV2.DEBUG) {
@@ -123,18 +190,34 @@ public class Node {
     }
 
 
-    void saveString(String value) {
+    /**
+     * 该节点对应的值为string ,将一个{@code value} 作为该节点的值
+     *
+     * @param value 该节点的值
+     */
+    void asString(String value) {
 
         mValueIndex = mValueContainer.saveStringValue(value);
-        type = VALUE_STRING;
+        mType = VALUE_STRING;
     }
 
 
+    /**
+     * @return 如果该节点对应 string; 那么返回该值 ,如果不是,返回null
+     */
     public String getString() {
 
-        if (type == VALUE_STRING) {
+        if (mType == VALUE_STRING) {
 
-            return mValueContainer.getStringValue(mValueIndex);
+            try {
+
+                return mValueContainer.getStringValue(mValueIndex);
+
+            } catch (Exception e) {
+
+                e.printStackTrace();
+                return null;
+            }
         } else {
 
             if (JsonParserV2.DEBUG) {
@@ -146,21 +229,32 @@ public class Node {
     }
 
 
-    void setNull() {
+    /**
+     * 设置当前节点为null节点,对应 json 中 值为null
+     */
+    void asNull() {
 
         mValueIndex = -1;
-        type = VALUE_NULL;
+        mType = VALUE_NULL;
     }
 
 
+    /**
+     * @return true:节点值为null
+     */
     public boolean isNull() {
 
-        return type == VALUE_NULL;
+        return mType == VALUE_NULL;
 
     }
 
 
-    void setBooleanValue(boolean value) {
+    /**
+     * 该节点对应的值为boolean类型 ,将一个{@code value} 作为该节点的值
+     *
+     * @param value 该节点的值
+     */
+    void asBoolean(boolean value) {
 
         if (value) {
 
@@ -170,13 +264,19 @@ public class Node {
             mValueIndex = -2;
         }
 
-        type = VALUE_BOOLEAN;
+        mType = VALUE_BOOLEAN;
     }
 
 
+    /**
+     * @return 如果该节点对应 boolean 值; 那么返回该值 ,如果不是,返回false,
+     *
+     * <br/>
+     * 需要自己调用时明确该节点对应的是boolean值,否则容易读取错误的 false 值
+     */
     public boolean getBoolean() {
 
-        if (type == VALUE_BOOLEAN) {
+        if (mType == VALUE_BOOLEAN) {
 
             return mValueIndex == -1;
         } else {
@@ -190,50 +290,73 @@ public class Node {
     }
 
 
-    void saveNumber(@NumberType int numberType, JsonReader jsonReader) throws IOException {
+    /**
+     * 简化方法,用于{@link JsonParserV2}读取并设置number值给节点
+     *
+     * @param numberType 用于判断如何保存number
+     * @param jsonReader reader
+     * @throws IOException exception
+     */
+    void asNumber(@NumberType int numberType, JsonReader jsonReader) throws IOException {
 
         switch (numberType) {
 
             case VALUE_NUMBER_INT:
                 int i = jsonReader.nextInt();
-                saveIntValue(i);
+                asInt(i);
                 break;
 
             case VALUE_NUMBER_LONG:
                 long j = jsonReader.nextLong();
-                saveLongValue(j);
+                asLong(j);
                 break;
 
             case VALUE_NUMBER_FLOAT:
                 float k = (float) jsonReader.nextDouble();
-                saveFloatValue(k);
+                asFloat(k);
                 break;
 
             case VALUE_NUMBER_DOUBLE:
                 double l = jsonReader.nextDouble();
-                saveDoubleValue(l);
+                asDouble(l);
                 break;
 
             default:
                 double m = jsonReader.nextDouble();
-                saveDoubleValue(m);
+                asDouble(m);
                 break;
         }
     }
 
 
-    void saveIntValue(int value) {
+    /**
+     * 该节点对应的值为json number类型 ,将该值保存为int类型
+     *
+     * @param value 该节点的值
+     */
+    void asInt(int value) {
 
         mValueIndex = mValueContainer.saveIntValue(value);
-        type = VALUE_NUMBER_INT;
+        mType = VALUE_NUMBER_INT;
     }
 
 
+    /**
+     * 如果该节点对应 json number 类型; 那么返回该值,如果类型不对或者没有该值将会返回{@link JsonParserV2#errorNumber}
+     *
+     * @return 该节点对应的 int 值
+     */
     public int getInt() {
 
-        if (type == VALUE_NUMBER_INT) {
+        if (mType == VALUE_NUMBER_INT) {
 
-            return mValueContainer.getIntValue(mValueIndex);
+            try {
+
+                return mValueContainer.getIntValue(mValueIndex);
+            } catch (Exception e) {
+
+                return JsonParserV2.errorNumber;
+            }
         } else {
 
             if (JsonParserV2.DEBUG) {
@@ -245,18 +368,34 @@ public class Node {
     }
 
 
-    void saveLongValue(long value) {
+    /**
+     * 该节点对应的值为json number类型 ,将该值保存为long类型
+     *
+     * @param value 该节点的值
+     */
+    void asLong(long value) {
 
         mValueIndex = mValueContainer.saveLongValue(value);
-        type = VALUE_NUMBER_LONG;
+        mType = VALUE_NUMBER_LONG;
     }
 
 
+    /**
+     * 如果该节点对应 json number 类型; 那么返回该值,如果类型不对或者没有该值将会返回{@link JsonParserV2#errorNumber}
+     *
+     * @return 该节点对应的 long 值
+     */
     public long getLong() {
 
-        if (type == VALUE_NUMBER_LONG) {
+        if (mType == VALUE_NUMBER_LONG) {
 
-            return mValueContainer.getLongValue(mValueIndex);
+            try {
+
+                return mValueContainer.getLongValue(mValueIndex);
+            } catch (Exception e) {
+
+                return JsonParserV2.errorNumber;
+            }
         } else {
 
             if (JsonParserV2.DEBUG) {
@@ -268,18 +407,34 @@ public class Node {
     }
 
 
-    void saveFloatValue(float value) {
+    /**
+     * 该节点对应的值为json number类型 ,将该值保存为float类型
+     *
+     * @param value 该节点的值
+     */
+    void asFloat(float value) {
 
         mValueIndex = mValueContainer.saveFloatValue(value);
-        type = VALUE_NUMBER_FLOAT;
+        mType = VALUE_NUMBER_FLOAT;
     }
 
 
+    /**
+     * 如果该节点对应 json number 类型; 那么返回该值,如果类型不对或者没有该值将会返回{@link JsonParserV2#errorNumber}
+     *
+     * @return 该节点对应的 float 值
+     */
     public float getFloat() {
 
-        if (type == VALUE_NUMBER_FLOAT) {
+        if (mType == VALUE_NUMBER_FLOAT) {
 
-            return mValueContainer.getFloatValue(mValueIndex);
+            try {
+
+                return mValueContainer.getFloatValue(mValueIndex);
+            } catch (Exception e) {
+
+                return JsonParserV2.errorNumber;
+            }
         } else {
 
             if (JsonParserV2.DEBUG) {
@@ -291,18 +446,35 @@ public class Node {
     }
 
 
-    void saveDoubleValue(double value) {
+    /**
+     * 该节点对应的值为json number类型 ,将该值保存为double类型,如果类型不对将会返回{@link JsonParserV2#errorNumber}
+     *
+     * @param value 该节点的值
+     */
+    void asDouble(double value) {
 
         mValueIndex = mValueContainer.saveDoubleValue(value);
-        type = VALUE_NUMBER_DOUBLE;
+        mType = VALUE_NUMBER_DOUBLE;
     }
 
 
+    /**
+     * 如果该节点对应 json number 类型; 那么返回该值,如果类型不对或者没有该值将会返回{@link JsonParserV2#errorNumber}
+     *
+     * @return 该节点对应的 double 值
+     */
     public double getDouble() {
 
-        if (type == VALUE_NUMBER_DOUBLE) {
+        if (mType == VALUE_NUMBER_DOUBLE) {
 
-            return mValueContainer.getDoubleValue(mValueIndex);
+            try {
+
+                return mValueContainer.getDoubleValue(mValueIndex);
+
+            } catch (Exception e) {
+
+                return JsonParserV2.errorNumber;
+            }
         } else {
 
             if (JsonParserV2.DEBUG) {
@@ -314,9 +486,12 @@ public class Node {
     }
 
 
+    /**
+     * 用于 debug 时,抛出异常
+     */
     private void throwTypeNotMatchException(String requireType) {
 
-        throw new RuntimeException("Type not Match Exception : current node type is " +
+        throw new RuntimeException("Type not Match Exception : current node mType is " +
                 getTypeString() +
                 " you required is " + requireType);
 
@@ -328,7 +503,7 @@ public class Node {
 
         String typeText = getTypeString();
 
-        return " node: " + " type: " + typeText + " " + getNodeValue();
+        return " node: " + " mType: " + typeText + " " + getNodeValue();
     }
 
 
@@ -337,7 +512,7 @@ public class Node {
 
         String typeText = null;
 
-        switch (type) {
+        switch (mType) {
             case NODE_OBJECT:
                 typeText = "Object";
                 break;
@@ -377,7 +552,7 @@ public class Node {
 
         String valueInString = null;
 
-        switch (type) {
+        switch (mType) {
             case NODE_OBJECT:
                 valueInString = getObject().toString();
                 break;

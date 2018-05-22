@@ -19,7 +19,8 @@ public class JsonParserV2 {
     /**
      * 用于设置是否开启调试
      */
-    static boolean DEBUG;
+    static  boolean        DEBUG;
+    private ValueContainer mValueContainer;
 
 
     /**
@@ -69,7 +70,7 @@ public class JsonParserV2 {
     /**
      * 当node读取数字类型的值失败的时候返回的值,{@link Node#getInt()}
      */
-    public static int errorNumber;
+    public static int errorNumber = -120;
 
 
     public static void setErrorNumber(int errorNumber) {
@@ -78,8 +79,6 @@ public class JsonParserV2 {
     }
 
     //============================ valueContainer ============================
-
-    private ValueContainer mValueContainer;
 
     //============================ Node ============================
 
@@ -123,11 +122,13 @@ public class JsonParserV2 {
 
                     case BEGIN_OBJECT:
 
+                        /* BEGIN_OBJECT 主要工作: 1.初始化; 2.为当前的节点添加Object子节点 */
+
                         jsonReader.beginObject();
 
                         if (lastToken == 0) {
 
-                            /* 开始解析,此处进行初始化 */
+                            /* 开始解析 */
 
                             if (DEBUG) {
                                 Log.i(TAG, "BEGIN_JSON");
@@ -137,11 +138,12 @@ public class JsonParserV2 {
 
                             mValueContainer = new ValueContainer();
 
-                            /* 初始化一个node类型是Object,对应Json整个数据 */
+                            /* 初始化一个node,她的类型是类型是NODE_OBJECT
+                            对应的值是ObjectNodeTree,该ObjectNodeTree对应整个Json */
 
+                            mCurrentNode = new Node(mValueContainer);
                             ObjectNodeTree nodeTree = new ObjectNodeTree();
-                            mCurrentNode = new Node();
-                            mCurrentNode.saveObject(nodeTree);
+                            mCurrentNode.asObject(nodeTree);
                         }
 
                         if (DEBUG) {
@@ -174,6 +176,19 @@ public class JsonParserV2 {
                             Log.i(TAG, "parseToName: " + currentNodeName);
                         }
 
+                        if (lastToken == TOKEN_BEGIN_OBJECT) {
+
+                            /* 从 BEGIN_OBJECT 转到 NAME, 说明 BEGIN_OBJECT 创建的节点需要添加子节点 */
+                            ObjectNodeTree nodeTree = mCurrentNode.getObject();
+                            Node node = new Node(mValueContainer);
+                            nodeTree.addNode(currentNodeName, node);
+
+                            /* name 肯定对应一个值/一个json object/一个json数组,
+                            所以需要将当前节点指向新创建的node,以便后续对该节点操作 */
+
+                            mCurrentNode = node;
+                        }
+
                         mLastToken = TOKEN_NAME;
                         break;
 
@@ -186,6 +201,8 @@ public class JsonParserV2 {
                             Log.i(TAG, "parseToValue: null");
                         }
 
+                        mCurrentNode.asNull();
+
                         mLastToken = TOKEN_VALUE;
                         break;
 
@@ -196,6 +213,8 @@ public class JsonParserV2 {
                             Log.i(TAG, "parseToValue:String: " + string);
                         }
 
+                        mCurrentNode.asString(string);
+
                         mLastToken = TOKEN_VALUE;
                         break;
 
@@ -205,6 +224,8 @@ public class JsonParserV2 {
                         if (DEBUG) {
                             Log.i(TAG, "parseToValue:boolean: " + booleanValue);
                         }
+
+                        mCurrentNode.asBoolean(booleanValue);
 
                         mLastToken = TOKEN_VALUE;
                         break;
