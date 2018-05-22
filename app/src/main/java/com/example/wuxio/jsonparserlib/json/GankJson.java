@@ -14,7 +14,7 @@ public class GankJson {
             "            \"desc\": \"安卓信使\",\n" +
             "            \"publishedAt\": \"2018-05-21T01:11:33.975Z\",\n" +
             "            \"source\": \"chrome\",\n" +
-            "            \"type\": \"Android\",\n" +
+            "            \"mType\": \"Android\",\n" +
             "            \"url\": \"https://github.com/signalapp/Signal-Android\",\n" +
             "            \"used\": true,\n" +
             "            \"who\": \"蒋朋\"\n" +
@@ -31,7 +31,7 @@ public class GankJson {
             "            \"desc\": \"安卓信使\",\n" +
             "            \"publishedAt\": \"2018-05-21T01:11:33.975Z\",\n" +
             "            \"source\": \"chrome\",\n" +
-            "            \"type\": \"Android\",\n" +
+            "            \"mType\": \"Android\",\n" +
             "            \"url\": \"https://github.com/signalapp/Signal-Android\",\n" +
             "            \"used\": true,\n" +
             "            \"who\": \"蒋朋\"\n" +
@@ -45,7 +45,7 @@ public class GankJson {
             "            ],\n" +
             "            \"publishedAt\": \"2018-05-21T01:11:33.975Z\",\n" +
             "            \"source\": \"web\",\n" +
-            "            \"type\": \"Android\",\n" +
+            "            \"mType\": \"Android\",\n" +
             "            \"url\": \"https://github.com/JessYanCoding/ArmsComponent\",\n" +
             "            \"used\": true,\n" +
             "            \"who\": \"jess\"\n" +
@@ -56,7 +56,7 @@ public class GankJson {
             "            \"desc\": \"一个简洁的基于 RxJava2 的事件总线库\",\n" +
             "            \"publishedAt\": \"2018-05-21T01:11:33.975Z\",\n" +
             "            \"source\": \"web\",\n" +
-            "            \"type\": \"Android\",\n" +
+            "            \"mType\": \"Android\",\n" +
             "            \"url\": \"https://github.com/Blankj/RxBus\",\n" +
             "            \"used\": true,\n" +
             "            \"who\": \"Mengjie Cai\"\n" +
@@ -73,7 +73,7 @@ public class GankJson {
             "            ],\n" +
             "            \"publishedAt\": \"2018-05-21T01:11:33.975Z\",\n" +
             "            \"source\": \"web\",\n" +
-            "            \"type\": \"Android\",\n" +
+            "            \"mType\": \"Android\",\n" +
             "            \"url\": \"https://github.com/hpdx/XPlayer2\",\n" +
             "            \"used\": true,\n" +
             "            \"who\": \"android_ls\"\n" +
@@ -91,7 +91,7 @@ public class GankJson {
             "            ],\n" +
             "            \"publishedAt\": \"2018-05-21T01:11:33.975Z\",\n" +
             "            \"source\": \"web\",\n" +
-            "            \"type\": \"Android\",\n" +
+            "            \"mType\": \"Android\",\n" +
             "            \"url\": \"https://github.com/eleme/UETool\",\n" +
             "            \"used\": true,\n" +
             "            \"who\": null\n" +
@@ -111,7 +111,7 @@ public class GankJson {
             "            ],\n" +
             "            \"publishedAt\": \"2018-05-21T01:11:33.975Z\",\n" +
             "            \"source\": \"web\",\n" +
-            "            \"type\": \"Android\",\n" +
+            "            \"mType\": \"Android\",\n" +
             "            \"url\": \"https://github.com/HpWens/MeiWidgetView\",\n" +
             "            \"used\": true,\n" +
             "            \"who\": null\n" +
@@ -125,7 +125,7 @@ public class GankJson {
             "            ],\n" +
             "            \"publishedAt\": \"2018-05-19T00:00:00.0Z\",\n" +
             "            \"source\": \"web\",\n" +
-            "            \"type\": \"Android\",\n" +
+            "            \"mType\": \"Android\",\n" +
             "            \"url\": \"https://github.com/AliEsaAssadi/Android-MVP-Architecture\",\n" +
             "            \"used\": true,\n" +
             "            \"who\": \"lijinshanmx\"\n" +
@@ -139,7 +139,7 @@ public class GankJson {
             "            ],\n" +
             "            \"publishedAt\": \"2018-05-19T00:00:00.0Z\",\n" +
             "            \"source\": \"web\",\n" +
-            "            \"type\": \"Android\",\n" +
+            "            \"mType\": \"Android\",\n" +
             "            \"url\": \"https://github.com/Kyash/rx-keyboard-detector\",\n" +
             "            \"used\": true,\n" +
             "            \"who\": \"lijinshanmx\"\n" +
@@ -154,7 +154,7 @@ public class GankJson {
             "            ],\n" +
             "            \"publishedAt\": \"2018-05-19T00:00:00.0Z\",\n" +
             "            \"source\": \"web\",\n" +
-            "            \"type\": \"Android\",\n" +
+            "            \"mType\": \"Android\",\n" +
             "            \"url\": \"https://github.com/kevalpatel2106/FingerprintDialogCompat\",\n" +
             "            \"used\": true,\n" +
             "            \"who\": \"lijinshanmx\"\n" +
@@ -172,7 +172,7 @@ public class GankJson {
             "            ],\n" +
             "            \"publishedAt\": \"2018-05-19T00:00:00.0Z\",\n" +
             "            \"source\": \"web\",\n" +
-            "            \"type\": \"Android\",\n" +
+            "            \"mType\": \"Android\",\n" +
             "            \"url\": \"https://github.com/HpWens/MeiBaseModule\",\n" +
             "            \"used\": true,\n" +
             "            \"who\": \"lijinshanmx\"\n" +

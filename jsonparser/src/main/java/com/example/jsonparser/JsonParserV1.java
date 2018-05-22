@@ -15,9 +15,9 @@ import java.util.List;
 /**
  * @author wuxio 2018-05-14:9:47
  */
-public class JsonParser {
+public class JsonParserV1 {
 
-    private static final String TAG = "JsonParser";
+    private static final String TAG = "JsonParserV1";
 
     /**
      * 用于设置是否开启调试
@@ -30,7 +30,7 @@ public class JsonParser {
      */
     public static void log(boolean printLog) {
 
-        JsonParser.LOG = printLog;
+        JsonParserV1.LOG = printLog;
     }
 
 
@@ -61,7 +61,7 @@ public class JsonParser {
 
 
     /**
-     * 常量,node type
+     * 常量,node mType
      */
     public static final int VALUE  = 17;
     public static final int OBJECT = 19;
@@ -86,7 +86,7 @@ public class JsonParser {
      *
      * @param onParseListener 监听过程
      */
-    private JsonParser(OnParseListener onParseListener) {
+    private JsonParserV1(OnParseListener onParseListener) {
 
         mOnParseListener = onParseListener;
     }
@@ -374,7 +374,7 @@ public class JsonParser {
 
 
         /**
-         * @return array index, or -1 if node is not {@link #ARRAY} type
+         * @return array index, or -1 if node is not {@link #ARRAY} mType
          */
         public int getIndex() {
 
@@ -393,7 +393,7 @@ public class JsonParser {
 
             if (type == VALUE) {
 
-                typeName = "VALUE";
+                typeName = "VALUE_NUMBER";
 
             } else if (type == OBJECT) {
 
@@ -406,8 +406,8 @@ public class JsonParser {
             }
 
             return "Node{" +
-                    "name='" + name + '\'' +
-                    ", type=" + typeName +
+                    "mName='" + name + '\'' +
+                    ", mType=" + typeName +
                     ", index=" + index +
                     '}';
         }
@@ -515,8 +515,8 @@ public class JsonParser {
     //============================ 工具方法 ============================
 
 
-    public static JsonParser create(OnParseListener onParseListener) {
+    public static JsonParserV1 create(OnParseListener onParseListener) {
 
-        return new JsonParser(onParseListener);
+        return new JsonParserV1(onParseListener);
     }
 }

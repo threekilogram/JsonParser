@@ -6,103 +6,100 @@ package com.example.wuxio.jsonparserlib.json;
 public class TestJson {
 
     public static final String JSON = "{\n" +
-            "    \"name\": \"runoob\",\n" +
-            "    \"alexa\": 10000,\n" +
-            "    \"sites\": {\n" +
-            "        \"site1\": \"www.runoob.com\",\n" +
-            "        \"site2\": \"m.runoob.com\",\n" +
-            "        \"site3\": \"c.runoob.com\"\n" +
-            "    },\n" +
-            "    \"favorate\": [\n" +
-            "        \"android\",\n" +
-            "        \"java\",\n" +
-            "        \"kotlin\"\n" +
-            "    ],\n" +
-            "    \"ages\": [\n" +
-            "        12,\n" +
-            "        18,\n" +
-            "        20,\n" +
-            "        24,\n" +
-            "        27\n" +
-            "    ],\n" +
-            "    \"groups\": [\n" +
-            "        {\n" +
-            "            \"group\": 1,\n" +
-            "            \"count\": 24\n" +
-            "        },\n" +
-            "        {\n" +
-            "            \"group\": 2,\n" +
-            "            \"count\": 36\n" +
-            "        },\n" +
-            "        {\n" +
-            "            \"group\": 3,\n" +
-            "            \"count\": 48\n" +
-            "        }\n" +
-            "    ],\n" +
-            "    \"siteCollect\": {\n" +
-            "        \"name\": \"网站\",\n" +
-            "        \"num\": 3,\n" +
-            "        \"sites\": [\n" +
-            "            \"Google\",\n" +
-            "            \"Runoob\",\n" +
-            "            \"Taobao\"\n" +
-            "        ]\n" +
-            "    },\n" +
-            "    \"totals\": [\n" +
-            "        {\n" +
-            "            \"name\": \"hello\",\n" +
-            "            \"count\": 24,\n" +
-            "            \"sites\": [\n" +
-            "                \"baidu\",\n" +
-            "                \"alibaba\",\n" +
-            "                \"tencent\"\n" +
-            "            ]\n" +
-            "        },\n" +
-            "        {\n" +
-            "            \"name\": \"world\",\n" +
-            "            \"count\": 36,\n" +
-            "            \"sites\": [\n" +
-            "                \"meituan\",\n" +
-            "                \"jingdong\",\n" +
-            "                \"lagou\"\n" +
-            "            ]\n" +
-            "        },\n" +
-            "        {\n" +
-            "            \"name\": \"java\",\n" +
-            "            \"count\": 48,\n" +
-            "            \"sites\": [\n" +
-            "                \"twitter\",\n" +
-            "                \"facebook\",\n" +
-            "                \"alphabet\"\n" +
-            "            ]\n" +
-            "        }\n" +
-            "    ],\n" +
-            "\t\"anotherTotals\": [\n" +
-            "        {\n" +
-            "            \"name\": \"hello\",\n" +
-            "            \"sites\": [\n" +
-            "                \"baidu\",\n" +
-            "                \"alibaba\",\n" +
-            "                \"tencent\"\n" +
-            "            ]\n" +
-            "        },\n" +
-            "        {\n" +
-            "            \"name\": \"world\",\n" +
-            "            \"sites\": [\n" +
-            "                \"meituan\",\n" +
-            "                \"jingdong\",\n" +
-            "                \"lagou\"\n" +
-            "            ]\n" +
-            "        },\n" +
-            "        {\n" +
-            "            \"name\": \"java\",\n" +
-            "            \"sites\": [\n" +
-            "                \"twitter\",\n" +
-            "                \"facebook\",\n" +
-            "                \"alphabet\"\n" +
-            "            ]\n" +
-            "        }\n" +
-            "    ]\n" +
+            "\t\"name\": \"runoob\",\n" +
+            "\t\"alexa\": 10000,\n" +
+            "\t\"sites\": {\n" +
+            "\t\t\"site1\": \"www.runoob.com\",\n" +
+            "\t\t\"site2\": \"m.runoob.com\",\n" +
+            "\t\t\"site3\": \"c.runoob.com\"\n" +
+            "\t},\n" +
+            "\t\"favorate\": [\n" +
+            "\t\t\"android\",\n" +
+            "\t\t\"java\",\n" +
+            "\t\t\"kotlin\"\n" +
+            "\t],\n" +
+            "\t\"ages\": [\n" +
+            "\t\t12,\n" +
+            "\t\t18,\n" +
+            "\t\t20,\n" +
+            "\t\t24,\n" +
+            "\t\t27\n" +
+            "\t],\n" +
+            "\t\"groups\": [{\n" +
+            "\t\t\t\"group\": 1,\n" +
+            "\t\t\t\"count\": 24\n" +
+            "\t\t},\n" +
+            "\t\t{\n" +
+            "\t\t\t\"group\": 2,\n" +
+            "\t\t\t\"count\": 36\n" +
+            "\t\t},\n" +
+            "\t\t{\n" +
+            "\t\t\t\"group\": 3,\n" +
+            "\t\t\t\"count\": 48\n" +
+            "\t\t}\n" +
+            "\t],\n" +
+            "\t\"siteCollect\": {\n" +
+            "\t\t\"name\": \"网站\",\n" +
+            "\t\t\"num\": 3,\n" +
+            "\t\t\"sites\": [\n" +
+            "\t\t\t\"Google\",\n" +
+            "\t\t\t\"Runoob\",\n" +
+            "\t\t\t\"Taobao\"\n" +
+            "\t\t]\n" +
+            "\t},\n" +
+            "\t\"totals\": [{\n" +
+            "\t\t\t\"name\": \"hello\",\n" +
+            "\t\t\t\"count\": 24,\n" +
+            "\t\t\t\"sites\": [\n" +
+            "\t\t\t\t\"baidu\",\n" +
+            "\t\t\t\t\"alibaba\",\n" +
+            "\t\t\t\t\"tencent\"\n" +
+            "\t\t\t]\n" +
+            "\t\t},\n" +
+            "\t\t{\n" +
+            "\t\t\t\"name\": \"world\",\n" +
+            "\t\t\t\"count\": 36,\n" +
+            "\t\t\t\"sites\": [\n" +
+            "\t\t\t\t\"meituan\",\n" +
+            "\t\t\t\t\"jingdong\",\n" +
+            "\t\t\t\t\"lagou\"\n" +
+            "\t\t\t]\n" +
+            "\t\t},\n" +
+            "\t\t{\n" +
+            "\t\t\t\"name\": \"java\",\n" +
+            "\t\t\t\"count\": 48,\n" +
+            "\t\t\t\"sites\": [\n" +
+            "\t\t\t\t\"twitter\",\n" +
+            "\t\t\t\t\"facebook\",\n" +
+            "\t\t\t\t\"alphabet\"\n" +
+            "\t\t\t]\n" +
+            "\t\t}\n" +
+            "\t],\n" +
+            "\t\"anotherTotals\": [{\n" +
+            "\t\t\t\"name\": \"hello\",\n" +
+            "\t\t\t\"sites\": [\n" +
+            "\t\t\t\t\"baidu\",\n" +
+            "\t\t\t\t\"alibaba\",\n" +
+            "\t\t\t\t\"tencent\"\n" +
+            "\t\t\t]\n" +
+            "\t\t},\n" +
+            "\t\t{\n" +
+            "\t\t\t\"name\": \"world\",\n" +
+            "\t\t\t\"sites\": [\n" +
+            "\t\t\t\t\"meituan\",\n" +
+            "\t\t\t\t\"jingdong\",\n" +
+            "\t\t\t\t\"lagou\"\n" +
+            "\t\t\t]\n" +
+            "\t\t},\n" +
+            "\t\t{\n" +
+            "\t\t\t\"name\": \"java\",\n" +
+            "\t\t\t\"sites\": [\n" +
+            "\t\t\t\t\"twitter\",\n" +
+            "\t\t\t\t\"facebook\",\n" +
+            "\t\t\t\t\"alphabet\"\n" +
+            "\t\t\t]\n" +
+            "\t\t}\n" +
+            "\t]\n" +
             "}";
 
 }
