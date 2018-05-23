@@ -91,22 +91,22 @@ public class JsonParser {
     /**
      * @param reader 解析json
      */
-    public void parse(Reader reader) {
+    public ObjectNodeTree parse(Reader reader) {
 
-        parse(reader, false);
+        return parse(reader, false);
     }
 
 
     /**
      * @param reader 解析格式不标准的json
      */
-    public void parseLenient(Reader reader) {
+    public ObjectNodeTree parseLenient(Reader reader) {
 
-        parse(reader, true);
+        return parse(reader, true);
     }
 
 
-    private void parse(Reader reader, boolean lenient) {
+    private ObjectNodeTree parse(Reader reader, boolean lenient) {
 
         JsonReader jsonReader = new JsonReader(reader);
 
@@ -147,7 +147,7 @@ public class JsonParser {
                             mCurrentNode.asObjectNode(nodeTree);
 
                             if (DEBUG) {
-                                Log.i(TAG, "BEGIN_OBJECT");
+                                Log.i(TAG, "BEGIN_OBJECT; " + lastTokenText(lastToken));
                             }
 
                             Log.d(TAG, "parse: " + mCurrentNode);
@@ -156,7 +156,7 @@ public class JsonParser {
                         }
 
                         if (DEBUG) {
-                            Log.i(TAG, "BEGIN_OBJECT");
+                            Log.i(TAG, "BEGIN_OBJECT; " + lastTokenText(lastToken));
                         }
 
                         if (lastToken == TOKEN_NAME) {
@@ -166,8 +166,40 @@ public class JsonParser {
                             ObjectNodeTree nodeTree = new ObjectNodeTree();
                             mCurrentNode.asObjectNode(nodeTree);
 
-                            Log.d(TAG, "parse: " + mCurrentNode);
+                        } else if (lastToken == TOKEN_BEGIN_ARRAY) {
+
+                            /* 上一步操作是BEGIN_ARRAY 说明当前节点是 json array; 并且它的元素都是object类型的 */
+
+                            ArrayNodeTree array = mCurrentNode.getArray();
+
+                            Node node = new Node(mValueContainer);
+                            ObjectNodeTree objectNodeTree = new ObjectNodeTree();
+                            objectNodeTree.node = node;
+                            node.asObjectNode(objectNodeTree);
+                            node.parent = array;
+
+                            array.addNode(node);
+
+                            mCurrentNode = node;
+
+                        } else if (lastToken == TOKEN_END_OBJECT) {
+
+                            /* 上一步操作是END_OBJECT 说明当前节点是 json array; 并且它的元素都是object类型的 */
+
+                            ArrayNodeTree array = (ArrayNodeTree) mCurrentNode.parent;
+
+                            Node node = new Node(mValueContainer);
+                            ObjectNodeTree objectNodeTree = new ObjectNodeTree();
+                            objectNodeTree.node = node;
+                            node.asObjectNode(objectNodeTree);
+                            node.parent = array;
+
+                            array.addNode(node);
+
+                            mCurrentNode = node;
                         }
+
+                        Log.d(TAG, "parse: " + mCurrentNode);
 
                         mLastToken = TOKEN_BEGIN_OBJECT;
                         break;
@@ -176,17 +208,18 @@ public class JsonParser {
 
                         jsonReader.beginArray();
                         if (DEBUG) {
-                            Log.i(TAG, "BEGIN_ARRAY :");
+                            Log.i(TAG, "BEGIN_ARRAY ; " + lastTokenText(lastToken));
                         }
-
-                        /*  */
 
                         if (lastToken == TOKEN_NAME) {
 
-                            ArrayNodeTree nodeTree = new ArrayNodeTree();
-                            mCurrentNode.asArray(nodeTree);
+                            /* name --> BEGIN_ARRAY ,说明name那里创建的节点是 json array 节点 */
+
+                            ArrayNodeTree arrayNodeTree = new ArrayNodeTree();
+                            mCurrentNode.asArray(arrayNodeTree);
                         }
 
+                        Log.d(TAG, "parse: " + mCurrentNode);
                         mLastToken = TOKEN_BEGIN_ARRAY;
                         break;
 
@@ -194,10 +227,12 @@ public class JsonParser {
 
                         String currentNodeName = jsonReader.nextName();
                         if (DEBUG) {
-                            Log.i(TAG, "parseToName: " + currentNodeName);
+                            Log.i(TAG, "parseToName: " + currentNodeName + "; " + lastTokenText(lastToken));
                         }
 
-                        if (lastToken == TOKEN_BEGIN_OBJECT || lastToken == TOKEN_END_OBJECT) {
+                        Log.d(TAG, "parse: " + mCurrentNode);
+
+                        if (lastToken == TOKEN_BEGIN_OBJECT) {
 
                             /* 从 BEGIN_OBJECT 转到 NAME, 说明 BEGIN_OBJECT 创建的节点需要添加子节点 */
 
@@ -212,9 +247,9 @@ public class JsonParser {
 
                             mCurrentNode = node;
 
-                        } else if (lastToken == TOKEN_VALUE) {
+                        } else {
 
-                            /* value --> name 说明这是在为一个 json object 节点设置子节点 */
+                            /* 只要上一个操作不是 BEGIN_OBJECT ,那么此处就为当前节点添加同级节点 */
 
                             ObjectNodeTree parent = (ObjectNodeTree) mCurrentNode.parent;
                             Node node = new Node(mValueContainer);
@@ -223,8 +258,9 @@ public class JsonParser {
                             parent.addNode(currentNodeName, node);
 
                             mCurrentNode = node;
-
                         }
+
+                        Log.d(TAG, "parse: " + mCurrentNode);
 
                         mLastToken = TOKEN_NAME;
                         break;
@@ -235,15 +271,24 @@ public class JsonParser {
 
                         jsonReader.nextNull();
                         if (DEBUG) {
-                            Log.i(TAG, "parseToValue: null");
+                            Log.i(TAG, "parseToValue: null" + "; " + lastTokenText(lastToken));
                         }
 
                         if (lastToken == TOKEN_NAME) {
 
                             mCurrentNode.asNullValueNode();
 
+                        } else if (lastToken == TOKEN_BEGIN_ARRAY || lastToken == TOKEN_VALUE) {
+
+                            /* 上一步操作是BEGIN_ARRAY/TOKEN_VALUE ,说明当前节点是 json array; 并且它的元素都是值类型的 */
+                            ArrayNodeTree array = mCurrentNode.getArray();
+                            Node node = new Node(mValueContainer);
+                            node.asNullValueNode();
+                            node.parent = array;
+                            array.addNode(node);
                         }
 
+                        Log.d(TAG, "parse: " + mCurrentNode);
                         mLastToken = TOKEN_VALUE;
                         break;
 
@@ -251,13 +296,24 @@ public class JsonParser {
 
                         String string = jsonReader.nextString();
                         if (DEBUG) {
-                            Log.i(TAG, "parseToValue:String: " + string);
+                            Log.i(TAG, "parseToValue:String: " + string + "; " + lastTokenText(lastToken));
                         }
 
                         if (lastToken == TOKEN_NAME) {
+
                             mCurrentNode.asStringValueNode(string);
+
+                        } else if (lastToken == TOKEN_BEGIN_ARRAY || lastToken == TOKEN_VALUE) {
+
+                            /* 上一步操作是BEGIN_ARRAY/TOKEN_VALUE ,说明当前节点是 json array; 并且它的元素都是值类型的 */
+                            ArrayNodeTree array = mCurrentNode.getArray();
+                            Node node = new Node(mValueContainer);
+                            node.asStringValueNode(string);
+                            node.parent = array;
+                            array.addNode(node);
                         }
 
+                        Log.d(TAG, "parse: " + mCurrentNode);
                         mLastToken = TOKEN_VALUE;
                         break;
 
@@ -265,13 +321,25 @@ public class JsonParser {
 
                         boolean booleanValue = jsonReader.nextBoolean();
                         if (DEBUG) {
-                            Log.i(TAG, "parseToValue:boolean: " + booleanValue);
+                            Log.i(TAG, "parseToValue:boolean: " + booleanValue + "; " + lastTokenText
+                                    (lastToken));
                         }
 
                         if (lastToken == TOKEN_NAME) {
+
                             mCurrentNode.asBooleanValueNode(booleanValue);
+
+                        } else if (lastToken == TOKEN_BEGIN_ARRAY || lastToken == TOKEN_VALUE) {
+
+                            /* 上一步操作是BEGIN_ARRAY/TOKEN_VALUE ,说明当前节点是 json array; 并且它的元素都是值类型的 */
+                            ArrayNodeTree array = mCurrentNode.getArray();
+                            Node node = new Node(mValueContainer);
+                            node.asBooleanValueNode(booleanValue);
+                            node.parent = array;
+                            array.addNode(node);
                         }
 
+                        Log.d(TAG, "parse: " + mCurrentNode);
                         mLastToken = TOKEN_VALUE;
                         break;
 
@@ -280,12 +348,33 @@ public class JsonParser {
                         if (lastToken == TOKEN_NAME) {
 
                             mCurrentNode.asNumberValueNode(mNumberType, jsonReader);
+
+                            if (DEBUG) {
+                                Log.i(TAG, "parseToValue:number: "
+                                        + mCurrentNode.nodeValue() + "; "
+                                        + lastTokenText(lastToken)
+                                );
+                            }
+
+                        } else if (lastToken == TOKEN_BEGIN_ARRAY || lastToken == TOKEN_VALUE) {
+
+                            /* 上一步操作是BEGIN_ARRAY/TOKEN_VALUE ,说明当前节点是 json array; 并且它的元素都是值类型的 */
+
+                            ArrayNodeTree array = mCurrentNode.getArray();
+                            Node node = new Node(mValueContainer);
+                            node.asNumberValueNode(mNumberType, jsonReader);
+                            node.parent = array;
+                            array.addNode(node);
+
+                            if (DEBUG) {
+                                Log.i(TAG, "parseToValue:number: "
+                                        + node.nodeValue() + "; "
+                                        + lastTokenText(lastToken)
+                                );
+                            }
                         }
 
-                        if (DEBUG) {
-                            Log.i(TAG, "parseToValue:number: " + mCurrentNode.nodeValue());
-                        }
-
+                        Log.d(TAG, "parse: " + mCurrentNode);
                         mLastToken = TOKEN_VALUE;
                         break;
 
@@ -293,7 +382,13 @@ public class JsonParser {
 
                         jsonReader.endArray();
                         if (DEBUG) {
-                            Log.i(TAG, "END_ARRAY");
+                            Log.i(TAG, "END_ARRAY; " + lastTokenText(lastToken));
+                        }
+
+                        if (lastToken == TOKEN_END_OBJECT) {
+
+                            NodeTree parent = mCurrentNode.parent;
+                            mCurrentNode = parent.nodeLinkedToTree();
                         }
 
                         mLastToken = TOKEN_END_ARRAY;
@@ -303,14 +398,15 @@ public class JsonParser {
 
                         jsonReader.endObject();
                         if (DEBUG) {
-                            Log.i(TAG, "END_OBJECT");
+                            Log.i(TAG, "END_OBJECT; " + lastTokenText(lastToken));
                         }
 
-                        if (lastToken == TOKEN_VALUE) {
+                        /* 主要工作:结束当前的 json object 节点添加,当前的节点还是指向object的子节点,将他移动到指向json object */
 
-                            ObjectNodeTree parent = (ObjectNodeTree) mCurrentNode.parent;
-                            mCurrentNode = parent.node;
-                        }
+                        NodeTree parent = mCurrentNode.parent;
+                        mCurrentNode = parent.nodeLinkedToTree();
+
+                        Log.d(TAG, "parse: " + mCurrentNode);
 
                         mLastToken = TOKEN_END_OBJECT;
                         break;
@@ -342,7 +438,50 @@ public class JsonParser {
         }
 
         if (DEBUG) {
-            Log.i(TAG, "parse:" + "PARSE_TO_END");
+            Log.i(TAG, "parse:" + "PARSE_TO_END; " + lastTokenText(mLastToken));
         }
+
+        ObjectNodeTree object = mCurrentNode.getObject();
+        Log.d(TAG, "parse: " + object);
+
+        return object;
+    }
+
+
+    private String lastTokenText(int lastToken) {
+
+        String result = null;
+
+        switch (lastToken) {
+            case TOKEN_BEGIN_OBJECT:
+                result = "BEGIN_OBJECT";
+                break;
+
+            case TOKEN_END_OBJECT:
+                result = "END_OBJECT";
+                break;
+
+            case TOKEN_BEGIN_ARRAY:
+                result = "BEGIN_ARRAY";
+                break;
+
+            case TOKEN_END_ARRAY:
+                result = "END_ARRAY";
+                break;
+
+            case TOKEN_NAME:
+                result = "NAME";
+                break;
+
+            case TOKEN_VALUE:
+                result = "VALUE";
+                break;
+
+            default:
+                result = "NO_TOKEN";
+                break;
+        }
+
+        return result;
     }
 }

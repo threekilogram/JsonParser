@@ -7,4 +7,6 @@ package com.example.jsonparser;
  */
 interface NodeTree {
 
+    Node nodeLinkedToTree();
+
 }

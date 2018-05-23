@@ -28,4 +28,31 @@ public class ArrayNodeTree implements NodeTree {
 
         return mNodeList.get(index);
     }
+
+    public int size(){
+
+        return mNodeList.size();
+    }
+
+    @Override
+    public String toString() {
+
+        StringBuilder builder = new StringBuilder();
+
+        int size = mNodeList.size();
+        for (int i = 0; i < size; i++) {
+
+            Node node = mNodeList.get(i);
+            builder.append("index: ").append(i).append("; value: ").append(node.nodeValue()).append("; ");
+        }
+
+        return builder.toString();
+    }
+
+
+    @Override
+    public Node nodeLinkedToTree() {
+
+        return node;
+    }
 }

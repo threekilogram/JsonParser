@@ -30,4 +30,29 @@ public class ObjectNodeTree implements NodeTree {
 
         return mNodeMap.get(key);
     }
+
+
+    @Override
+    public String toString() {
+
+        int size = mNodeMap.size();
+        StringBuilder stringBuilder = new StringBuilder();
+
+        stringBuilder.append("Object: ");
+
+        for (int i = 0; i < size; i++) {
+            String key = mNodeMap.keyAt(i);
+            Node node = mNodeMap.get(key);
+            stringBuilder.append(key).append(" : ").append(node.nodeValue()).append("; ");
+        }
+
+        return stringBuilder.toString();
+    }
+
+
+    @Override
+    public Node nodeLinkedToTree() {
+
+        return node;
+    }
 }

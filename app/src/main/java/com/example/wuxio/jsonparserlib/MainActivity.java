@@ -5,6 +5,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.example.jsonparser.JsonParser;
+import com.example.jsonparser.ObjectNodeTree;
+import com.example.wuxio.jsonparserlib.json.GankJson;
 import com.example.wuxio.jsonparserlib.json.TestJson;
 
 import java.io.StringReader;
@@ -32,9 +34,11 @@ public class MainActivity extends AppCompatActivity {
 
         JsonParser.debug(true);
         JsonParser jsonParser = new JsonParser();
-        StringReader reader = new StringReader(TestJson.JSON00);
-        jsonParser.parse(reader);
+        StringReader reader = new StringReader(GankJson.JSON);
+        ObjectNodeTree tree = jsonParser.parse(reader);
+
+        boolean error = tree.getNode("error").getBoolean();
+
 
     }
-
 }

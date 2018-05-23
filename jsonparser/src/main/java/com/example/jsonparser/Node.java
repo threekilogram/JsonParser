@@ -102,7 +102,13 @@ public class Node {
      */
     private int mValueIndex = -1;
 
+    /**
+     * 节点的名字,对应json key, json array 中的节点没有key,所以{@link ArrayNodeTree} 中的节点没有名字
+     */
     String   name;
+    /**
+     * 该节点的父节点,如果节点是 json 的直接子节点,那么没有父节点
+     */
     NodeTree parent;
 
     /**
@@ -496,10 +502,9 @@ public class Node {
      */
     private void throwTypeNotMatchException(String requireType) {
 
-        throw new RuntimeException("Type not Match Exception : current node mType is " +
+        throw new RuntimeException("Type not Match Exception : current node is " +
                 getTypeString() +
                 " you required is " + requireType);
-
     }
 
 
@@ -508,7 +513,10 @@ public class Node {
 
         String typeText = getTypeString();
 
-        return " nodeName: " + name + "; nodeType: " + typeText + "; nodeValue: " + nodeValue();
+        return "\n nodeName: " + name +
+                "; \n nodeType: " + typeText +
+                "; \n nodeValue: " + nodeValue() +
+                "; \n parent: " + parent + "\n";
     }
 
 
@@ -584,7 +592,6 @@ public class Node {
                 break;
             case VALUE_NUMBER_LONG:
                 valueInString = String.valueOf(getLong());
-                ;
                 break;
             default:
                 valueInString = "Undefined Value";
