@@ -78,7 +78,7 @@ public class Node {
      * <br/>
      * 如果key对应的是number类型,该节点类型将是{@link #VALUE_NUMBER_INT},{@link #VALUE_NUMBER_LONG},
      * {@link #VALUE_NUMBER_FLOAT},{@link #VALUE_NUMBER_DOUBLE}其中之一,
-     * 具体由{@link JsonParserV2#setNumberType(int)}决定
+     * 具体由{@link JsonParser#setNumberType(int)}决定
      *
      * <br/>
      * 如果key对应的是json string值,该节点类型将是{@link #VALUE_STRING}
@@ -102,6 +102,9 @@ public class Node {
      */
     private int mValueIndex = -1;
 
+    String   name;
+    NodeTree parent;
+
     /**
      * 该类管理整个json的值,包括json number值/json Object/ json array /string
      */
@@ -119,10 +122,11 @@ public class Node {
      *
      * @param objectNode 该节点的值
      */
-    void asObject(ObjectNodeTree objectNode) {
+    void asObjectNode(ObjectNodeTree objectNode) {
 
         mValueIndex = mValueContainer.saveNodeTree(objectNode);
         mType = NODE_OBJECT;
+        objectNode.node = this;
     }
 
 
@@ -143,7 +147,7 @@ public class Node {
             }
         } else {
 
-            if (JsonParserV2.DEBUG) {
+            if (JsonParser.DEBUG) {
                 throwTypeNotMatchException("Object");
             }
 
@@ -161,6 +165,7 @@ public class Node {
 
         mValueIndex = mValueContainer.saveNodeTree(arrayNodeTree);
         mType = NODE_ARRAY;
+        arrayNodeTree.node = this;
     }
 
 
@@ -181,7 +186,7 @@ public class Node {
             }
         } else {
 
-            if (JsonParserV2.DEBUG) {
+            if (JsonParser.DEBUG) {
                 throwTypeNotMatchException("Array");
             }
 
@@ -195,7 +200,7 @@ public class Node {
      *
      * @param value 该节点的值
      */
-    void asString(String value) {
+    void asStringValueNode(String value) {
 
         mValueIndex = mValueContainer.saveStringValue(value);
         mType = VALUE_STRING;
@@ -220,7 +225,7 @@ public class Node {
             }
         } else {
 
-            if (JsonParserV2.DEBUG) {
+            if (JsonParser.DEBUG) {
                 throwTypeNotMatchException("String");
             }
 
@@ -232,7 +237,7 @@ public class Node {
     /**
      * 设置当前节点为null节点,对应 json 中 值为null
      */
-    void asNull() {
+    void asNullValueNode() {
 
         mValueIndex = -1;
         mType = VALUE_NULL;
@@ -254,7 +259,7 @@ public class Node {
      *
      * @param value 该节点的值
      */
-    void asBoolean(boolean value) {
+    void asBooleanValueNode(boolean value) {
 
         if (value) {
 
@@ -281,7 +286,7 @@ public class Node {
             return mValueIndex == -1;
         } else {
 
-            if (JsonParserV2.DEBUG) {
+            if (JsonParser.DEBUG) {
                 throwTypeNotMatchException("boolean");
             }
 
@@ -291,13 +296,13 @@ public class Node {
 
 
     /**
-     * 简化方法,用于{@link JsonParserV2}读取并设置number值给节点
+     * 简化方法,用于{@link JsonParser}读取并设置number值给节点
      *
      * @param numberType 用于判断如何保存number
      * @param jsonReader reader
      * @throws IOException exception
      */
-    void asNumber(@NumberType int numberType, JsonReader jsonReader) throws IOException {
+    void asNumberValueNode(@NumberType int numberType, JsonReader jsonReader) throws IOException {
 
         switch (numberType) {
 
@@ -342,7 +347,7 @@ public class Node {
 
 
     /**
-     * 如果该节点对应 json number 类型; 那么返回该值,如果类型不对或者没有该值将会返回{@link JsonParserV2#errorNumber}
+     * 如果该节点对应 json number 类型; 那么返回该值,如果类型不对或者没有该值将会返回{@link JsonParser#errorNumber}
      *
      * @return 该节点对应的 int 值
      */
@@ -355,15 +360,15 @@ public class Node {
                 return mValueContainer.getIntValue(mValueIndex);
             } catch (Exception e) {
 
-                return JsonParserV2.errorNumber;
+                return JsonParser.errorNumber;
             }
         } else {
 
-            if (JsonParserV2.DEBUG) {
+            if (JsonParser.DEBUG) {
                 throwTypeNotMatchException("boolean");
             }
 
-            return JsonParserV2.errorNumber;
+            return JsonParser.errorNumber;
         }
     }
 
@@ -381,7 +386,7 @@ public class Node {
 
 
     /**
-     * 如果该节点对应 json number 类型; 那么返回该值,如果类型不对或者没有该值将会返回{@link JsonParserV2#errorNumber}
+     * 如果该节点对应 json number 类型; 那么返回该值,如果类型不对或者没有该值将会返回{@link JsonParser#errorNumber}
      *
      * @return 该节点对应的 long 值
      */
@@ -394,15 +399,15 @@ public class Node {
                 return mValueContainer.getLongValue(mValueIndex);
             } catch (Exception e) {
 
-                return JsonParserV2.errorNumber;
+                return JsonParser.errorNumber;
             }
         } else {
 
-            if (JsonParserV2.DEBUG) {
+            if (JsonParser.DEBUG) {
                 throwTypeNotMatchException("long");
             }
 
-            return JsonParserV2.errorNumber;
+            return JsonParser.errorNumber;
         }
     }
 
@@ -420,7 +425,7 @@ public class Node {
 
 
     /**
-     * 如果该节点对应 json number 类型; 那么返回该值,如果类型不对或者没有该值将会返回{@link JsonParserV2#errorNumber}
+     * 如果该节点对应 json number 类型; 那么返回该值,如果类型不对或者没有该值将会返回{@link JsonParser#errorNumber}
      *
      * @return 该节点对应的 float 值
      */
@@ -433,21 +438,21 @@ public class Node {
                 return mValueContainer.getFloatValue(mValueIndex);
             } catch (Exception e) {
 
-                return JsonParserV2.errorNumber;
+                return JsonParser.errorNumber;
             }
         } else {
 
-            if (JsonParserV2.DEBUG) {
+            if (JsonParser.DEBUG) {
                 throwTypeNotMatchException("float");
             }
 
-            return JsonParserV2.errorNumber;
+            return JsonParser.errorNumber;
         }
     }
 
 
     /**
-     * 该节点对应的值为json number类型 ,将该值保存为double类型,如果类型不对将会返回{@link JsonParserV2#errorNumber}
+     * 该节点对应的值为json number类型 ,将该值保存为double类型,如果类型不对将会返回{@link JsonParser#errorNumber}
      *
      * @param value 该节点的值
      */
@@ -459,7 +464,7 @@ public class Node {
 
 
     /**
-     * 如果该节点对应 json number 类型; 那么返回该值,如果类型不对或者没有该值将会返回{@link JsonParserV2#errorNumber}
+     * 如果该节点对应 json number 类型; 那么返回该值,如果类型不对或者没有该值将会返回{@link JsonParser#errorNumber}
      *
      * @return 该节点对应的 double 值
      */
@@ -473,15 +478,15 @@ public class Node {
 
             } catch (Exception e) {
 
-                return JsonParserV2.errorNumber;
+                return JsonParser.errorNumber;
             }
         } else {
 
-            if (JsonParserV2.DEBUG) {
+            if (JsonParser.DEBUG) {
                 throwTypeNotMatchException("double");
             }
 
-            return JsonParserV2.errorNumber;
+            return JsonParser.errorNumber;
         }
     }
 
@@ -503,7 +508,7 @@ public class Node {
 
         String typeText = getTypeString();
 
-        return " node: " + " mType: " + typeText + " " + getNodeValue();
+        return " nodeName: " + name + "; nodeType: " + typeText + "; nodeValue: " + nodeValue();
     }
 
 
@@ -548,7 +553,7 @@ public class Node {
     }
 
 
-    private String getNodeValue() {
+    String nodeValue() {
 
         String valueInString = null;
 

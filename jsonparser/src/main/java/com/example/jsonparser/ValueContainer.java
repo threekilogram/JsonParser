@@ -134,7 +134,7 @@ class ValueContainer {
             return mIntValues[index];
         } catch (Exception e) {
 
-            return JsonParserV2.errorNumber;
+            return JsonParser.errorNumber;
         }
     }
 
@@ -181,7 +181,7 @@ class ValueContainer {
             return mLongValues[index];
         } catch (Exception e) {
 
-            return JsonParserV2.errorNumber;
+            return JsonParser.errorNumber;
         }
     }
 
@@ -228,7 +228,7 @@ class ValueContainer {
             return mFloatValues[index];
         } catch (Exception e) {
 
-            return JsonParserV2.errorNumber;
+            return JsonParser.errorNumber;
         }
     }
 
@@ -275,7 +275,7 @@ class ValueContainer {
             return mDoubleValues[index];
         } catch (Exception e) {
 
-            return JsonParserV2.errorNumber;
+            return JsonParser.errorNumber;
         }
     }
 

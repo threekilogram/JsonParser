@@ -4,7 +4,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
-import com.example.jsonparser.JsonParserV2;
+import com.example.jsonparser.JsonParser;
 import com.example.wuxio.jsonparserlib.json.TestJson;
 
 import java.io.StringReader;
@@ -30,10 +30,10 @@ public class MainActivity extends AppCompatActivity {
 
         Log.i(TAG, "initView:" + TestJson.JSON);
 
-        JsonParserV2.debug(true);
-        JsonParserV2 jsonParserV2 = new JsonParserV2();
-        StringReader reader = new StringReader(TestJson.JSON);
-        jsonParserV2.parse(reader);
+        JsonParser.debug(true);
+        JsonParser jsonParser = new JsonParser();
+        StringReader reader = new StringReader(TestJson.JSON00);
+        jsonParser.parse(reader);
 
     }
 

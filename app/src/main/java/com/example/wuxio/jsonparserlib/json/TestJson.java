@@ -5,6 +5,13 @@ package com.example.wuxio.jsonparserlib.json;
  */
 public class TestJson {
 
+    public static final String JSON00 = "{\n" +
+            "        \"name\": \"runoob\",\n" +
+            "        \"alexa\": 10000,\n" +
+            "\t\t\"marryed\": false,\n" +
+            "\t\t\"ehco\":null\t\t\n" +
+            "}";
+
     public static final String JSON = "{\n" +
             "\t\"name\": \"runoob\",\n" +
             "\t\"alexa\": 10000,\n" +

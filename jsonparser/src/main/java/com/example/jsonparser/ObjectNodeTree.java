@@ -1,6 +1,5 @@
 package com.example.jsonparser;
 
-import android.support.annotation.Nullable;
 import android.support.v4.util.ArrayMap;
 
 /**
@@ -16,16 +15,9 @@ public class ObjectNodeTree implements NodeTree {
     private ArrayMap< String, Node > mNodeMap = new ArrayMap<>();
 
     /**
-     * 当前 Object 的父节点,如果是对应整个json的ObjectNodeTree那么parent为null
+     * 当前 Object 对应的node,如果是对应整个json的ObjectNodeTree那么为null
      */
-    Node parent;
-
-
-    @Nullable
-    public Node getParent() {
-
-        return parent;
-    }
+    Node node;
 
 
     void addNode(String key, Node node) {

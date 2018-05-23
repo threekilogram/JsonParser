@@ -12,6 +12,12 @@ public class ArrayNodeTree implements NodeTree {
     private ArrayList< Node > mNodeList = new ArrayList<>();
 
 
+    /**
+     * 当前 array 对应的node
+     */
+    Node node;
+
+
     void addNode(Node node) {
 
         mNodeList.add(node);

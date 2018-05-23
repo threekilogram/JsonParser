@@ -1,8 +1,10 @@
 package com.example.jsonparser;
 
 /**
+ * 标记接口
+ *
  * @author wuxio 2018-05-22:8:38
  */
-public interface NodeTree {
+interface NodeTree {
 
 }
