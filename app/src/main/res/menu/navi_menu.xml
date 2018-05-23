@@ -4,15 +4,15 @@
     <group android:checkableBehavior="single">
         <item
                 android:id="@+id/menu00"
-                android:title="jsonParser"/>
+                android:title="Gson"/>
 
         <item
                 android:id="@+id/menu01"
-                android:title="gson"/>
+                android:title="JsonParser"/>
 
         <item
                 android:id="@+id/menu02"
-                android:title="fastJson"/>
+                android:title="FastJson"/>
 
     </group>
 
