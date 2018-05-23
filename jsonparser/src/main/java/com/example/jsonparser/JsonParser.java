@@ -185,7 +185,6 @@ public class JsonParser {
 
                             ObjectNodeTree nodeTree = mCurrentNode.getObject();
                             Node node = new Node(mValueContainer);
-                            node.name = currentNodeName;
                             node.parent = nodeTree;
                             nodeTree.addNode(currentNodeName, node);
 
@@ -200,7 +199,6 @@ public class JsonParser {
 
                             ObjectNodeTree parent = (ObjectNodeTree) mCurrentNode.parent;
                             Node node = new Node(mValueContainer);
-                            node.name = currentNodeName;
                             node.parent = parent;
                             parent.addNode(currentNodeName, node);
 

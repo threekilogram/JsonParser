@@ -103,10 +103,6 @@ class Node {
     private int mValueIndex = -1;
 
     /**
-     * 节点的名字,对应json key, json array 中的节点没有key,所以{@link ArrayNodeTree} 中的节点没有名字
-     */
-    String   name;
-    /**
      * 该节点的父节点,如果节点是 json 的直接子节点,那么没有父节点
      */
     NodeTree parent;
@@ -558,7 +554,7 @@ class Node {
 
         String typeText = getTypeString();
 
-        return "\n nodeName: " + name +
+        return "\n node: " +
                 "; \n nodeType: " + typeText +
                 "; \n nodeValue: " + nodeValue() +
                 "; \n parent: " + parent + "\n";
