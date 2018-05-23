@@ -11,8 +11,6 @@ import java.io.Reader;
  */
 public class JsonParser {
 
-    private ValueContainer mValueContainer;
-
     //============================ 上一次操作 ============================
 
     /**
@@ -24,10 +22,6 @@ public class JsonParser {
     private static final int TOKEN_END_OBJECT   = 7;
     private static final int TOKEN_BEGIN_ARRAY  = 11;
     private static final int TOKEN_END_ARRAY    = 13;
-    /**
-     * 记录上一次操作,需要再解析时分析操作
-     */
-    private int mLastToken;
 
     //============================ construct ============================
 
@@ -60,13 +54,6 @@ public class JsonParser {
         errorNumber = errorNumber;
     }
 
-    //============================ Node ============================
-
-    /**
-     * 记录当前操作的节点
-     */
-    private Node mCurrentNode;
-
     //============================ 解析Json ============================
 
 
@@ -94,12 +81,14 @@ public class JsonParser {
 
         jsonReader.setLenient(lenient);
 
+        Node mCurrentNode = null;
+        int lastToken = 0;
+        ValueContainer mValueContainer = null;
+
         try {
 
             JsonToken peek = jsonReader.peek();
             while (peek != JsonToken.END_DOCUMENT) {
-
-                int lastToken = mLastToken;
 
                 switch (peek) {
 
@@ -124,7 +113,7 @@ public class JsonParser {
                             ObjectNodeTree nodeTree = new ObjectNodeTree();
                             mCurrentNode.asObjectNode(nodeTree);
 
-                            mLastToken = TOKEN_BEGIN_OBJECT;
+                            lastToken = TOKEN_BEGIN_OBJECT;
                             break;
                         }
 
@@ -168,7 +157,7 @@ public class JsonParser {
                             mCurrentNode = node;
                         }
 
-                        mLastToken = TOKEN_BEGIN_OBJECT;
+                        lastToken = TOKEN_BEGIN_OBJECT;
                         break;
 
                     case BEGIN_ARRAY:
@@ -183,7 +172,7 @@ public class JsonParser {
                             mCurrentNode.asArray(arrayNodeTree);
                         }
 
-                        mLastToken = TOKEN_BEGIN_ARRAY;
+                        lastToken = TOKEN_BEGIN_ARRAY;
                         break;
 
                     case NAME:
@@ -218,7 +207,7 @@ public class JsonParser {
                             mCurrentNode = node;
                         }
 
-                        mLastToken = TOKEN_NAME;
+                        lastToken = TOKEN_NAME;
                         break;
 
                     /* read to a value */
@@ -241,7 +230,7 @@ public class JsonParser {
                             array.addNode(node);
                         }
 
-                        mLastToken = TOKEN_VALUE;
+                        lastToken = TOKEN_VALUE;
                         break;
 
                     case STRING:
@@ -262,7 +251,7 @@ public class JsonParser {
                             array.addNode(node);
                         }
 
-                        mLastToken = TOKEN_VALUE;
+                        lastToken = TOKEN_VALUE;
                         break;
 
                     case BOOLEAN:
@@ -283,7 +272,7 @@ public class JsonParser {
                             array.addNode(node);
                         }
 
-                        mLastToken = TOKEN_VALUE;
+                        lastToken = TOKEN_VALUE;
                         break;
 
                     case NUMBER:
@@ -304,7 +293,7 @@ public class JsonParser {
 
                         }
 
-                        mLastToken = TOKEN_VALUE;
+                        lastToken = TOKEN_VALUE;
                         break;
 
                     case END_ARRAY:
@@ -317,7 +306,7 @@ public class JsonParser {
                             mCurrentNode = parent.nodeLinkedToTree();
                         }
 
-                        mLastToken = TOKEN_END_ARRAY;
+                        lastToken = TOKEN_END_ARRAY;
                         break;
 
                     case END_OBJECT:
@@ -329,7 +318,7 @@ public class JsonParser {
                         NodeTree parent = mCurrentNode.parent;
                         mCurrentNode = parent.nodeLinkedToTree();
 
-                        mLastToken = TOKEN_END_OBJECT;
+                        lastToken = TOKEN_END_OBJECT;
                         break;
 
                     default:
