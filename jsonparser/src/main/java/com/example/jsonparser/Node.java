@@ -153,10 +153,6 @@ class Node {
             }
         } else {
 
-            if (JsonParser.DEBUG) {
-                throwTypeNotMatchException("Object");
-            }
-
             return null;
         }
     }
@@ -192,10 +188,6 @@ class Node {
             }
         } else {
 
-            if (JsonParser.DEBUG) {
-                throwTypeNotMatchException("Array");
-            }
-
             return null;
         }
     }
@@ -230,10 +222,6 @@ class Node {
                 return null;
             }
         } else {
-
-            if (JsonParser.DEBUG) {
-                throwTypeNotMatchException("String");
-            }
 
             return null;
         }
@@ -291,10 +279,6 @@ class Node {
 
             return mValueIndex == -1;
         } else {
-
-            if (JsonParser.DEBUG) {
-                throwTypeNotMatchException("boolean");
-            }
 
             return false;
         }
@@ -370,10 +354,6 @@ class Node {
             }
         } else {
 
-            if (JsonParser.DEBUG) {
-                throwTypeNotMatchException("boolean");
-            }
-
             return JsonParser.errorNumber;
         }
     }
@@ -408,10 +388,6 @@ class Node {
                 return JsonParser.errorNumber;
             }
         } else {
-
-            if (JsonParser.DEBUG) {
-                throwTypeNotMatchException("long");
-            }
 
             return JsonParser.errorNumber;
         }
@@ -448,10 +424,6 @@ class Node {
             }
         } else {
 
-            if (JsonParser.DEBUG) {
-                throwTypeNotMatchException("float");
-            }
-
             return JsonParser.errorNumber;
         }
     }
@@ -487,10 +459,6 @@ class Node {
                 return JsonParser.errorNumber;
             }
         } else {
-
-            if (JsonParser.DEBUG) {
-                throwTypeNotMatchException("double");
-            }
 
             return JsonParser.errorNumber;
         }
@@ -582,17 +550,6 @@ class Node {
             default:
                 return JsonParser.errorNumber;
         }
-    }
-
-
-    /**
-     * 用于 debug 时,抛出异常
-     */
-    private void throwTypeNotMatchException(String requireType) {
-
-        throw new RuntimeException("Type not Match Exception : current node is " +
-                getTypeString() +
-                " you required is " + requireType);
     }
 
 

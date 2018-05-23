@@ -2,7 +2,6 @@ package com.example.jsonparser;
 
 import android.util.JsonReader;
 import android.util.JsonToken;
-import android.util.Log;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -12,24 +11,7 @@ import java.io.Reader;
  */
 public class JsonParser {
 
-    //============================ debug 操作 ============================
-
-    private static final String TAG = "JsonParser";
-
-    /**
-     * 用于设置是否开启调试
-     */
-    static  boolean        DEBUG;
     private ValueContainer mValueContainer;
-
-
-    /**
-     * @param ifDebug : true: 解析时将会输出log
-     */
-    public static void debug(boolean ifDebug) {
-
-        JsonParser.DEBUG = ifDebug;
-    }
 
     //============================ 上一次操作 ============================
 
@@ -131,10 +113,6 @@ public class JsonParser {
 
                             /* 开始解析 */
 
-                            if (DEBUG) {
-                                Log.i(TAG, "BEGIN_JSON");
-                            }
-
                             /* 初始化一个json value容器,用来管理json的key对应的值 */
 
                             mValueContainer = new ValueContainer();
@@ -146,16 +124,8 @@ public class JsonParser {
                             ObjectNodeTree nodeTree = new ObjectNodeTree();
                             mCurrentNode.asObjectNode(nodeTree);
 
-                            if (DEBUG) {
-                                Log.i(TAG, "BEGIN_OBJECT; " + lastTokenText(lastToken));
-                            }
-
                             mLastToken = TOKEN_BEGIN_OBJECT;
                             break;
-                        }
-
-                        if (DEBUG) {
-                            Log.i(TAG, "BEGIN_OBJECT; " + lastTokenText(lastToken));
                         }
 
                         if (lastToken == TOKEN_NAME) {
@@ -204,9 +174,6 @@ public class JsonParser {
                     case BEGIN_ARRAY:
 
                         jsonReader.beginArray();
-                        if (DEBUG) {
-                            Log.i(TAG, "BEGIN_ARRAY ; " + lastTokenText(lastToken));
-                        }
 
                         if (lastToken == TOKEN_NAME) {
 
@@ -222,9 +189,6 @@ public class JsonParser {
                     case NAME:
 
                         String currentNodeName = jsonReader.nextName();
-                        if (DEBUG) {
-                            Log.i(TAG, "parseToName: " + currentNodeName + "; " + lastTokenText(lastToken));
-                        }
 
                         if (lastToken == TOKEN_BEGIN_OBJECT) {
 
@@ -262,9 +226,6 @@ public class JsonParser {
                     case NULL:
 
                         jsonReader.nextNull();
-                        if (DEBUG) {
-                            Log.i(TAG, "parseToValue: null" + "; " + lastTokenText(lastToken));
-                        }
 
                         if (lastToken == TOKEN_NAME) {
 
@@ -286,9 +247,6 @@ public class JsonParser {
                     case STRING:
 
                         String string = jsonReader.nextString();
-                        if (DEBUG) {
-                            Log.i(TAG, "parseToValue:String: " + string + "; " + lastTokenText(lastToken));
-                        }
 
                         if (lastToken == TOKEN_NAME) {
 
@@ -310,10 +268,6 @@ public class JsonParser {
                     case BOOLEAN:
 
                         boolean booleanValue = jsonReader.nextBoolean();
-                        if (DEBUG) {
-                            Log.i(TAG, "parseToValue:boolean: " + booleanValue + "; " + lastTokenText
-                                    (lastToken));
-                        }
 
                         if (lastToken == TOKEN_NAME) {
 
@@ -338,13 +292,6 @@ public class JsonParser {
 
                             mCurrentNode.asNumberValueNode(mNumberType, jsonReader);
 
-                            if (DEBUG) {
-                                Log.i(TAG, "parseToValue:number: "
-                                        + mCurrentNode.nodeValue() + "; "
-                                        + lastTokenText(lastToken)
-                                );
-                            }
-
                         } else if (lastToken == TOKEN_BEGIN_ARRAY || lastToken == TOKEN_VALUE) {
 
                             /* 上一步操作是BEGIN_ARRAY/TOKEN_VALUE ,说明当前节点是 json array; 并且它的元素都是值类型的 */
@@ -355,12 +302,6 @@ public class JsonParser {
                             node.parent = array;
                             array.addNode(node);
 
-                            if (DEBUG) {
-                                Log.i(TAG, "parseToValue:number: "
-                                        + node.nodeValue() + "; "
-                                        + lastTokenText(lastToken)
-                                );
-                            }
                         }
 
                         mLastToken = TOKEN_VALUE;
@@ -369,9 +310,6 @@ public class JsonParser {
                     case END_ARRAY:
 
                         jsonReader.endArray();
-                        if (DEBUG) {
-                            Log.i(TAG, "END_ARRAY; " + lastTokenText(lastToken));
-                        }
 
                         if (lastToken == TOKEN_END_OBJECT) {
 
@@ -385,9 +323,6 @@ public class JsonParser {
                     case END_OBJECT:
 
                         jsonReader.endObject();
-                        if (DEBUG) {
-                            Log.i(TAG, "END_OBJECT; " + lastTokenText(lastToken));
-                        }
 
                         /* 主要工作:结束当前的 json object 节点添加,当前的节点还是指向object的子节点,将他移动到指向json object */
 
@@ -406,13 +341,7 @@ public class JsonParser {
 
         } catch (IOException e) {
 
-            if (DEBUG) {
-
-                throw new RuntimeException(e);
-            } else {
-
-                e.printStackTrace();
-            }
+            e.printStackTrace();
 
         } finally {
 
@@ -421,10 +350,6 @@ public class JsonParser {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }
-
-        if (DEBUG) {
-            Log.i(TAG, "parse:" + "PARSE_TO_END; " + lastTokenText(mLastToken));
         }
 
         return mCurrentNode.getObject();
