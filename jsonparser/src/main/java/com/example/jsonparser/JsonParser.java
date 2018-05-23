@@ -150,7 +150,6 @@ public class JsonParser {
                                 Log.i(TAG, "BEGIN_OBJECT; " + lastTokenText(lastToken));
                             }
 
-                            Log.d(TAG, "parse: " + mCurrentNode);
                             mLastToken = TOKEN_BEGIN_OBJECT;
                             break;
                         }
@@ -199,8 +198,6 @@ public class JsonParser {
                             mCurrentNode = node;
                         }
 
-                        Log.d(TAG, "parse: " + mCurrentNode);
-
                         mLastToken = TOKEN_BEGIN_OBJECT;
                         break;
 
@@ -219,7 +216,6 @@ public class JsonParser {
                             mCurrentNode.asArray(arrayNodeTree);
                         }
 
-                        Log.d(TAG, "parse: " + mCurrentNode);
                         mLastToken = TOKEN_BEGIN_ARRAY;
                         break;
 
@@ -229,8 +225,6 @@ public class JsonParser {
                         if (DEBUG) {
                             Log.i(TAG, "parseToName: " + currentNodeName + "; " + lastTokenText(lastToken));
                         }
-
-                        Log.d(TAG, "parse: " + mCurrentNode);
 
                         if (lastToken == TOKEN_BEGIN_OBJECT) {
 
@@ -260,8 +254,6 @@ public class JsonParser {
                             mCurrentNode = node;
                         }
 
-                        Log.d(TAG, "parse: " + mCurrentNode);
-
                         mLastToken = TOKEN_NAME;
                         break;
 
@@ -288,7 +280,6 @@ public class JsonParser {
                             array.addNode(node);
                         }
 
-                        Log.d(TAG, "parse: " + mCurrentNode);
                         mLastToken = TOKEN_VALUE;
                         break;
 
@@ -313,7 +304,6 @@ public class JsonParser {
                             array.addNode(node);
                         }
 
-                        Log.d(TAG, "parse: " + mCurrentNode);
                         mLastToken = TOKEN_VALUE;
                         break;
 
@@ -339,7 +329,6 @@ public class JsonParser {
                             array.addNode(node);
                         }
 
-                        Log.d(TAG, "parse: " + mCurrentNode);
                         mLastToken = TOKEN_VALUE;
                         break;
 
@@ -374,7 +363,6 @@ public class JsonParser {
                             }
                         }
 
-                        Log.d(TAG, "parse: " + mCurrentNode);
                         mLastToken = TOKEN_VALUE;
                         break;
 
@@ -405,8 +393,6 @@ public class JsonParser {
 
                         NodeTree parent = mCurrentNode.parent;
                         mCurrentNode = parent.nodeLinkedToTree();
-
-                        Log.d(TAG, "parse: " + mCurrentNode);
 
                         mLastToken = TOKEN_END_OBJECT;
                         break;
@@ -441,10 +427,7 @@ public class JsonParser {
             Log.i(TAG, "parse:" + "PARSE_TO_END; " + lastTokenText(mLastToken));
         }
 
-        ObjectNodeTree object = mCurrentNode.getObject();
-        Log.d(TAG, "parse: " + object);
-
-        return object;
+        return mCurrentNode.getObject();
     }
 
 

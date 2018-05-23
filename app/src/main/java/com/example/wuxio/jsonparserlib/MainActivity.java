@@ -6,7 +6,6 @@ import android.util.Log;
 
 import com.example.jsonparser.JsonParser;
 import com.example.jsonparser.ObjectNodeTree;
-import com.example.wuxio.jsonparserlib.json.GankJson;
 import com.example.wuxio.jsonparserlib.json.TestJson;
 
 import java.io.StringReader;
@@ -30,15 +29,14 @@ public class MainActivity extends AppCompatActivity {
 
     private void initView() {
 
+        JsonParser jsonParser = new JsonParser();
+        StringReader reader = new StringReader(TestJson.JSON);
+
         Log.i(TAG, "initView:" + TestJson.JSON);
 
-        JsonParser.debug(true);
-        JsonParser jsonParser = new JsonParser();
-        StringReader reader = new StringReader(GankJson.JSON);
         ObjectNodeTree tree = jsonParser.parse(reader);
-
-        boolean error = tree.getNode("error").getBoolean();
-
+        String name = tree.getString("name");
+        Log.i(TAG, "initView:" + name);
 
     }
 }

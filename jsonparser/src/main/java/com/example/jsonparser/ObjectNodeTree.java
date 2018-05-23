@@ -26,12 +26,6 @@ public class ObjectNodeTree implements NodeTree {
     }
 
 
-    public Node getNode(String key) {
-
-        return mNodeMap.get(key);
-    }
-
-
     @Override
     public String toString() {
 
@@ -54,5 +48,104 @@ public class ObjectNodeTree implements NodeTree {
     public Node nodeLinkedToTree() {
 
         return node;
+    }
+
+    //============================ 属性读取方法 ============================
+
+
+    public String getString(String key) {
+
+        try {
+
+            return mNodeMap.get(key).getString();
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
+    public boolean isNull(String key) {
+
+        try {
+
+            return mNodeMap.get(key).isNull();
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+            return true;
+        }
+    }
+
+
+    public boolean valueExist(String key) {
+
+        return mNodeMap.get(key) != null;
+    }
+
+
+    public String getValue(String key) {
+
+        try {
+
+            return mNodeMap.get(key).nodeValue();
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
+    public boolean getBoolean(String key) {
+
+        try {
+
+            return mNodeMap.get(key).getBoolean();
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+
+    public ObjectNodeTree getObject(String key) {
+
+        try {
+
+            return mNodeMap.get(key).getObject();
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
+    public ArrayNodeTree getArray(String key) {
+
+        try {
+
+            return mNodeMap.get(key).getArray();
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
+    public int getInt(String key) {
+
+        Node node = mNodeMap.get(key);
+        return node.numberInt();
     }
 }

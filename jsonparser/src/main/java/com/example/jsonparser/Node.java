@@ -17,7 +17,7 @@ import java.lang.annotation.RetentionPolicy;
  *
  * @author wuxio
  */
-public class Node {
+class Node {
 
     /**
      * node 的值是number类型时的标记
@@ -139,7 +139,7 @@ public class Node {
     /**
      * @return 如果该节点对应 jsonObject; 那么返回 {@link ObjectNodeTree} ,如果不是对应jsonObject,返回null
      */
-    public ObjectNodeTree getObject() {
+    ObjectNodeTree getObject() {
 
         if (mType == NODE_OBJECT) {
 
@@ -178,7 +178,7 @@ public class Node {
     /**
      * @return 如果该节点对应 json Array; 那么返回 {@link ArrayNodeTree} ,如果不是对应json Array,返回null
      */
-    public ArrayNodeTree getArray() {
+    ArrayNodeTree getArray() {
 
         if (mType == NODE_ARRAY) {
 
@@ -216,7 +216,7 @@ public class Node {
     /**
      * @return 如果该节点对应 string; 那么返回该值 ,如果不是,返回null
      */
-    public String getString() {
+    String getString() {
 
         if (mType == VALUE_STRING) {
 
@@ -253,7 +253,7 @@ public class Node {
     /**
      * @return true:节点值为null
      */
-    public boolean isNull() {
+    boolean isNull() {
 
         return mType == VALUE_NULL;
 
@@ -285,7 +285,7 @@ public class Node {
      * <br/>
      * 需要自己调用时明确该节点对应的是boolean值,否则容易读取错误的 false 值
      */
-    public boolean getBoolean() {
+    boolean getBoolean() {
 
         if (mType == VALUE_BOOLEAN) {
 
@@ -357,7 +357,7 @@ public class Node {
      *
      * @return 该节点对应的 int 值
      */
-    public int getInt() {
+    int getInt() {
 
         if (mType == VALUE_NUMBER_INT) {
 
@@ -396,7 +396,7 @@ public class Node {
      *
      * @return 该节点对应的 long 值
      */
-    public long getLong() {
+    long getLong() {
 
         if (mType == VALUE_NUMBER_LONG) {
 
@@ -435,7 +435,7 @@ public class Node {
      *
      * @return 该节点对应的 float 值
      */
-    public float getFloat() {
+    float getFloat() {
 
         if (mType == VALUE_NUMBER_FLOAT) {
 
@@ -474,7 +474,7 @@ public class Node {
      *
      * @return 该节点对应的 double 值
      */
-    public double getDouble() {
+    double getDouble() {
 
         if (mType == VALUE_NUMBER_DOUBLE) {
 
@@ -493,6 +493,94 @@ public class Node {
             }
 
             return JsonParser.errorNumber;
+        }
+    }
+
+
+    int numberInt() {
+
+        switch (mType) {
+
+            case VALUE_NUMBER_DOUBLE:
+                return (int) getDouble();
+
+            case VALUE_NUMBER_FLOAT:
+                return (int) getFloat();
+
+            case VALUE_NUMBER_LONG:
+                return (int) getLong();
+
+            case VALUE_NUMBER_INT:
+                return getInt();
+
+            default:
+                return JsonParser.errorNumber;
+        }
+    }
+
+
+    long numberLong() {
+
+        switch (mType) {
+
+            case VALUE_NUMBER_DOUBLE:
+                return (long) getDouble();
+
+            case VALUE_NUMBER_FLOAT:
+                return (long) getFloat();
+
+            case VALUE_NUMBER_LONG:
+                return getLong();
+
+            case VALUE_NUMBER_INT:
+                return getInt();
+
+            default:
+                return JsonParser.errorNumber;
+        }
+    }
+
+
+    float numberFloat() {
+
+        switch (mType) {
+
+            case VALUE_NUMBER_DOUBLE:
+                return (float) getDouble();
+
+            case VALUE_NUMBER_FLOAT:
+                return getFloat();
+
+            case VALUE_NUMBER_LONG:
+                return getLong();
+
+            case VALUE_NUMBER_INT:
+                return getInt();
+
+            default:
+                return JsonParser.errorNumber;
+        }
+    }
+
+
+    double numberDouble() {
+
+        switch (mType) {
+
+            case VALUE_NUMBER_DOUBLE:
+                return getDouble();
+
+            case VALUE_NUMBER_FLOAT:
+                return getFloat();
+
+            case VALUE_NUMBER_LONG:
+                return getLong();
+
+            case VALUE_NUMBER_INT:
+                return getInt();
+
+            default:
+                return JsonParser.errorNumber;
         }
     }
 
