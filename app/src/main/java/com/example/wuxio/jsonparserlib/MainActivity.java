@@ -37,6 +37,17 @@ public class MainActivity extends AppCompatActivity {
         ObjectNodeTree tree = jsonParser.parse(reader);
         String name = tree.getString("name");
         Log.i(TAG, "initView:" + name);
+        int alexa = tree.getInt("alexa");
+        Log.i(TAG, "initView:" + alexa);
+
+        String string = tree.getObject("sites").getString("site1");
+        Log.i(TAG, "initView:" + string);
+
+        String favorate = tree.getArray("favorate").getString(0);
+        Log.i(TAG, "initView:" + favorate);
+
+        int anInt = tree.getArray("groups").getObject(0).getInt("group");
+        Log.i(TAG, "initView:" + anInt);
 
     }
 }

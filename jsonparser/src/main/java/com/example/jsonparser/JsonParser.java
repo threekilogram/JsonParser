@@ -52,7 +52,7 @@ public class JsonParser {
 
     public JsonParser() {
 
-        mNumberType = Node.VALUE_NUMBER_DOUBLE;
+        mNumberType = Node.VALUE_NUMBER_FLOAT;
     }
 
     //============================ 配置使用什么类型保存数字类型 ============================
