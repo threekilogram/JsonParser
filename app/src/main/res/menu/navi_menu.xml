@@ -8,11 +8,11 @@
 
         <item
                 android:id="@+id/menu01"
-                android:title="JsonParser"/>
+                android:title="FastJson"/>
 
         <item
                 android:id="@+id/menu02"
-                android:title="FastJson"/>
+                android:title="JsonParser"/>
 
     </group>
 
