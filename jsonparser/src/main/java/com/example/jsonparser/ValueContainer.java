@@ -5,7 +5,7 @@ package com.example.jsonparser;
  */
 class ValueContainer {
 
-    private static final int ARRAY_SIZE = 8;
+    private static final int ARRAY_SIZE = 16;
 
     //============================ 保存json Object/array value,NodeTree类型 ============================
 
@@ -15,18 +15,22 @@ class ValueContainer {
 
     public int saveNodeTree(NodeTree value) {
 
-        if (mNodeTrees == null) {
+        NodeTree[] trees = mNodeTrees;
+
+        if (trees == null) {
             mNodeTrees = new NodeTree[ARRAY_SIZE];
+            trees = mNodeTrees;
         }
 
         int index = mNodeTreesIndex;
 
-        if (mNodeTrees.length == index) {
+        if (trees.length == index) {
 
             growNodeTreeArray();
+            trees = mNodeTrees;
         }
 
-        mNodeTrees[index] = value;
+        trees[index] = value;
 
         mNodeTreesIndex = index + 1;
 
@@ -37,8 +41,11 @@ class ValueContainer {
     public NodeTree getNodeTree(int index) {
 
         try {
+
             return mNodeTrees[index];
+
         } catch (Exception e) {
+
             return null;
         }
     }
@@ -46,10 +53,13 @@ class ValueContainer {
 
     private void growNodeTreeArray() {
 
-        int length = mNodeTrees.length;
+        NodeTree[] trees = mNodeTrees;
+
+        int length = trees.length;
         int i = length / ARRAY_SIZE + 1;
         NodeTree[] newObjectArray = new NodeTree[i * ARRAY_SIZE];
-        System.arraycopy(mNodeTrees, 0, newObjectArray, 0, length);
+        System.arraycopy(trees, 0, newObjectArray, 0, length);
+
         mNodeTrees = newObjectArray;
     }
 
@@ -61,18 +71,22 @@ class ValueContainer {
 
     public int saveStringValue(String value) {
 
-        if (mStringValues == null) {
+        String[] values = mStringValues;
+
+        if (values == null) {
             mStringValues = new String[ARRAY_SIZE];
+            values = mStringValues;
         }
 
         int index = mStringValueIndex;
 
-        if (mStringValues.length == index) {
+        if (values.length == index) {
 
             growStringArray();
+            values = mStringValues;
         }
 
-        mStringValues[index] = value;
+        values[index] = value;
 
         mStringValueIndex = index + 1;
 
@@ -92,10 +106,13 @@ class ValueContainer {
 
     private void growStringArray() {
 
-        int length = mStringValues.length;
+        String[] values = mStringValues;
+
+        int length = values.length;
         int i = length / ARRAY_SIZE + 1;
         String[] newObjectArray = new String[i * ARRAY_SIZE];
-        System.arraycopy(mStringValues, 0, newObjectArray, 0, length);
+        System.arraycopy(values, 0, newObjectArray, 0, length);
+
         mStringValues = newObjectArray;
     }
 
@@ -109,18 +126,22 @@ class ValueContainer {
 
     public int saveIntValue(int value) {
 
-        if (mIntValues == null) {
+        int[] values = mIntValues;
+
+        if (values == null) {
             mIntValues = new int[ARRAY_SIZE];
+            values = mIntValues;
         }
 
         int index = mIntValueIndex;
 
-        if (mIntValues.length == index) {
+        if (values.length == index) {
 
             growIntArray();
+            values = mIntValues;
         }
 
-        mIntValues[index] = value;
+        values[index] = value;
 
         mIntValueIndex = index + 1;
 
@@ -141,10 +162,13 @@ class ValueContainer {
 
     private void growIntArray() {
 
-        int length = mIntValues.length;
+        int[] values = mIntValues;
+
+        int length = values.length;
         int i = length / ARRAY_SIZE + 1;
         int[] newIntArray = new int[i * ARRAY_SIZE];
-        System.arraycopy(mIntValues, 0, newIntArray, 0, length);
+        System.arraycopy(values, 0, newIntArray, 0, length);
+
         mIntValues = newIntArray;
     }
 
@@ -156,8 +180,12 @@ class ValueContainer {
 
     public int saveLongValue(long value) {
 
-        if (mLongValues == null) {
+        long[] values = mLongValues;
+
+        if (values == null) {
+
             mLongValues = new long[ARRAY_SIZE];
+            values = mLongValues;
         }
 
         int index = mLongValueIndex;
@@ -165,9 +193,10 @@ class ValueContainer {
         if (mLongValues.length == index) {
 
             growLongArray();
+            values = mLongValues;
         }
 
-        mLongValues[index] = value;
+        values[index] = value;
 
         mLongValueIndex = index + 1;
 
@@ -178,7 +207,9 @@ class ValueContainer {
     public long getLongValue(int index) {
 
         try {
+
             return mLongValues[index];
+
         } catch (Exception e) {
 
             return JsonParser.errorNumber;
@@ -188,10 +219,13 @@ class ValueContainer {
 
     private void growLongArray() {
 
-        int length = mLongValues.length;
+        long[] values = mLongValues;
+
+        int length = values.length;
         int i = length / ARRAY_SIZE + 1;
         long[] newLongArray = new long[i * ARRAY_SIZE];
-        System.arraycopy(mLongValues, 0, newLongArray, 0, length);
+        System.arraycopy(values, 0, newLongArray, 0, length);
+
         mLongValues = newLongArray;
     }
 
@@ -203,18 +237,22 @@ class ValueContainer {
 
     public int saveFloatValue(float value) {
 
-        if (mFloatValues == null) {
+        float[] values = mFloatValues;
+
+        if (values == null) {
             mFloatValues = new float[ARRAY_SIZE];
+            values = mFloatValues;
         }
 
         int index = mFloatValueIndex;
 
-        if (mFloatValues.length == index) {
+        if (values.length == index) {
 
             growFloatArray();
+            values = mFloatValues;
         }
 
-        mFloatValues[index] = value;
+        values[index] = value;
 
         mFloatValueIndex = index + 1;
 
@@ -225,7 +263,9 @@ class ValueContainer {
     public float getFloatValue(int index) {
 
         try {
+
             return mFloatValues[index];
+
         } catch (Exception e) {
 
             return JsonParser.errorNumber;
@@ -235,10 +275,13 @@ class ValueContainer {
 
     private void growFloatArray() {
 
-        int length = mFloatValues.length;
+        float[] values = mFloatValues;
+
+        int length = values.length;
         int i = length / ARRAY_SIZE + 1;
         float[] newFloatArray = new float[i * ARRAY_SIZE];
-        System.arraycopy(mFloatValues, 0, newFloatArray, 0, length);
+        System.arraycopy(values, 0, newFloatArray, 0, length);
+
         mFloatValues = newFloatArray;
     }
 
@@ -250,18 +293,23 @@ class ValueContainer {
 
     public int saveDoubleValue(double value) {
 
-        if (mDoubleValues == null) {
+        double[] values = mDoubleValues;
+
+        if (values == null) {
+
             mDoubleValues = new double[ARRAY_SIZE];
+            values = mDoubleValues;
         }
 
         int index = mDoubleValueIndex;
 
-        if (mDoubleValues.length == index) {
+        if (values.length == index) {
 
             growDoubleArray();
+            values = mDoubleValues;
         }
 
-        mDoubleValues[index] = value;
+        values[index] = value;
 
         mDoubleValueIndex = index + 1;
 
@@ -272,7 +320,9 @@ class ValueContainer {
     public double getDoubleValue(int index) {
 
         try {
+
             return mDoubleValues[index];
+
         } catch (Exception e) {
 
             return JsonParser.errorNumber;
@@ -282,10 +332,13 @@ class ValueContainer {
 
     private void growDoubleArray() {
 
-        int length = mDoubleValues.length;
+        double[] values = mDoubleValues;
+
+        int length = values.length;
         int i = length / ARRAY_SIZE + 1;
         double[] newDoubleArray = new double[i * ARRAY_SIZE];
-        System.arraycopy(mDoubleValues, 0, newDoubleArray, 0, length);
+        System.arraycopy(values, 0, newDoubleArray, 0, length);
+
         mDoubleValues = newDoubleArray;
     }
 }

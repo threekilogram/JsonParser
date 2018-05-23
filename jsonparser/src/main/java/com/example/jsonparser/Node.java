@@ -112,10 +112,236 @@ class Node {
      */
     private ValueContainer mValueContainer;
 
+    //============================ construct ============================
 
-    Node(ValueContainer valueContainer) {
+
+    /**
+     * 创建一个位于 jsonArray 中 类型是 jsonObject 的节点
+     *
+     * @param valueContainer 保存json value
+     * @param parent         父节点 jsonArray
+     * @param value          值jsonObject
+     */
+    Node(ValueContainer valueContainer, ArrayNodeTree parent, ObjectNodeTree value) {
 
         mValueContainer = valueContainer;
+
+        this.parent = parent;
+        parent.addNode(this);
+
+        asObjectNode(value);
+    }
+
+
+    /**
+     * 创建一个位于 jsonArray 中 类型是 null 的节点
+     *
+     * @param valueContainer 保存json value
+     * @param parent         父节点 jsonArray
+     */
+    Node(ValueContainer valueContainer, ArrayNodeTree parent) {
+
+        mValueContainer = valueContainer;
+
+        this.parent = parent;
+        parent.addNode(this);
+
+        asNullValueNode();
+    }
+
+
+    /**
+     * 创建一个位于 jsonArray 中 类型是 string 的节点
+     *
+     * @param valueContainer 保存json value
+     * @param parent         父节点 jsonArray
+     * @param value          值jsonObject
+     */
+    Node(ValueContainer valueContainer, ArrayNodeTree parent, String value) {
+
+        mValueContainer = valueContainer;
+
+        this.parent = parent;
+        parent.addNode(this);
+
+        asStringValueNode(value);
+    }
+
+
+    /**
+     * 创建一个位于 jsonArray 中 类型是 boolean 的节点
+     *
+     * @param valueContainer 保存json value
+     * @param parent         父节点 jsonArray
+     * @param value          值jsonObject
+     */
+    Node(ValueContainer valueContainer, ArrayNodeTree parent, boolean value) {
+
+        mValueContainer = valueContainer;
+
+        this.parent = parent;
+        parent.addNode(this);
+
+        asBooleanValueNode(value);
+    }
+
+
+    /**
+     * 创建一个位于 jsonArray 中 类型是 number 的节点
+     *
+     * @param valueContainer 保存json value
+     * @param parent         父节点 jsonArray
+     * @param numberType     如何保存数字类型
+     * @param reader         reader
+     */
+    Node(ValueContainer valueContainer, ArrayNodeTree parent, int numberType, JsonReader reader) {
+
+        mValueContainer = valueContainer;
+
+        this.parent = parent;
+        parent.addNode(this);
+
+        try {
+
+            asNumberValueNode(numberType, reader, valueContainer);
+
+        } catch (IOException e) {
+
+            e.printStackTrace();
+        }
+    }
+
+
+    /**
+     * 创建一个 json object 的节点
+     *
+     * @param valueContainer 保存json value
+     * @param value          该节点对应的 object value
+     */
+    Node(ValueContainer valueContainer, ObjectNodeTree value) {
+
+        mValueContainer = valueContainer;
+
+        asObjectNode(value);
+    }
+
+
+    /**
+     * 创建一个属于 {@code parent} 的 name = key,value = null的子节点
+     *
+     * @param valueContainer 保存json value
+     * @param parent         该节点的父 object 节点
+     * @param key            节点名字
+     */
+    Node(ValueContainer valueContainer, ObjectNodeTree parent, String key) {
+
+        mValueContainer = valueContainer;
+
+        this.parent = parent;
+        parent.addNode(key, this);
+
+        asNullValueNode();
+    }
+
+
+    /**
+     * 创建一个属于 {@code parent} 的 name = key,value = string 的子节点
+     *
+     * @param valueContainer 保存json value
+     * @param parent         该节点的父 object 节点
+     * @param key            节点名字
+     */
+    Node(ValueContainer valueContainer, ObjectNodeTree parent, String key, String value) {
+
+        mValueContainer = valueContainer;
+
+        this.parent = parent;
+        parent.addNode(key, this);
+
+        asStringValueNode(value);
+    }
+
+
+    /**
+     * 创建一个属于 {@code parent} 的 name = key,value = value 的子节点
+     *
+     * @param valueContainer 保存json value
+     * @param parent         该节点的父 object 节点
+     * @param key            节点名字
+     */
+    Node(ValueContainer valueContainer, ObjectNodeTree parent, String key, boolean value) {
+
+        mValueContainer = valueContainer;
+
+        this.parent = parent;
+        parent.addNode(key, this);
+
+        asBooleanValueNode(value);
+    }
+
+
+    /**
+     * 创建一个属于 {@code parent} 的 name = key,value = number 的子节点
+     *
+     * @param valueContainer 保存json value
+     * @param parent         该节点的父 object 节点
+     * @param key            节点名字
+     */
+    Node(ValueContainer valueContainer,
+         ObjectNodeTree parent,
+         String key,
+         int numberType,
+         JsonReader reader) {
+
+        mValueContainer = valueContainer;
+
+        this.parent = parent;
+        parent.addNode(key, this);
+
+        try {
+
+            asNumberValueNode(numberType, reader, valueContainer);
+
+        } catch (IOException e) {
+
+            e.printStackTrace();
+        }
+    }
+
+
+    /**
+     * 创建一个属于 {@code nodeTree} 的 name = key,value = ObjectNodeTree 的子节点
+     *
+     * @param valueContainer 保存json value
+     * @param parent         该节点的父 object 节点
+     * @param key            节点名字
+     */
+    Node(ValueContainer valueContainer, ObjectNodeTree parent, String key, ObjectNodeTree value) {
+
+        mValueContainer = valueContainer;
+
+        this.parent = parent;
+        parent.addNode(key, this);
+
+        asObjectNode(value);
+    }
+
+
+    /**
+     * 创建一个属于 {@code nodeTree} 的 name = key,value = ArrayNodeTree 的子节点
+     *
+     * @param valueContainer 保存json value
+     * @param parent         该节点的父 object 节点
+     * @param key            节点名字
+     */
+    Node(ValueContainer valueContainer, ObjectNodeTree parent, String key, ArrayNodeTree value) {
+
+        mValueContainer = valueContainer;
+
+        this.parent = parent;
+        parent.addNode(key, this);
+
+        asArray(value);
     }
 
 
@@ -124,7 +350,7 @@ class Node {
      *
      * @param objectNode 该节点的值
      */
-    void asObjectNode(ObjectNodeTree objectNode) {
+    private void asObjectNode(ObjectNodeTree objectNode) {
 
         mValueIndex = mValueContainer.saveNodeTree(objectNode);
         mType = NODE_OBJECT;
@@ -159,7 +385,7 @@ class Node {
      *
      * @param arrayNodeTree 该节点的值
      */
-    void asArray(ArrayNodeTree arrayNodeTree) {
+    private void asArray(ArrayNodeTree arrayNodeTree) {
 
         mValueIndex = mValueContainer.saveNodeTree(arrayNodeTree);
         mType = NODE_ARRAY;
@@ -194,7 +420,7 @@ class Node {
      *
      * @param value 该节点的值
      */
-    void asStringValueNode(String value) {
+    private void asStringValueNode(String value) {
 
         mValueIndex = mValueContainer.saveStringValue(value);
         mType = VALUE_STRING;
@@ -227,7 +453,7 @@ class Node {
     /**
      * 设置当前节点为null节点,对应 json 中 值为null
      */
-    void asNullValueNode() {
+    private void asNullValueNode() {
 
         mValueIndex = -1;
         mType = VALUE_NULL;
@@ -249,7 +475,7 @@ class Node {
      *
      * @param value 该节点的值
      */
-    void asBooleanValueNode(boolean value) {
+    private void asBooleanValueNode(boolean value) {
 
         if (value) {
 
@@ -271,13 +497,7 @@ class Node {
      */
     boolean getBoolean() {
 
-        if (mType == VALUE_BOOLEAN) {
-
-            return mValueIndex == -1;
-        } else {
-
-            return false;
-        }
+        return mType == VALUE_BOOLEAN && mValueIndex == -1;
     }
 
 
@@ -288,33 +508,36 @@ class Node {
      * @param jsonReader reader
      * @throws IOException exception
      */
-    void asNumberValueNode(@NumberType int numberType, JsonReader jsonReader) throws IOException {
+    private void asNumberValueNode(
+            @NumberType int numberType,
+            JsonReader jsonReader,
+            ValueContainer valueContainer) throws IOException {
 
         switch (numberType) {
 
             case VALUE_NUMBER_INT:
                 int i = jsonReader.nextInt();
-                asInt(i);
+                asInt(i, valueContainer);
                 break;
 
             case VALUE_NUMBER_LONG:
                 long j = jsonReader.nextLong();
-                asLong(j);
+                asLong(j, valueContainer);
                 break;
 
             case VALUE_NUMBER_FLOAT:
                 float k = (float) jsonReader.nextDouble();
-                asFloat(k);
+                asFloat(k, valueContainer);
                 break;
 
             case VALUE_NUMBER_DOUBLE:
                 double l = jsonReader.nextDouble();
-                asDouble(l);
+                asDouble(l, valueContainer);
                 break;
 
             default:
                 double m = jsonReader.nextDouble();
-                asDouble(m);
+                asDouble(m, valueContainer);
                 break;
         }
     }
@@ -325,9 +548,9 @@ class Node {
      *
      * @param value 该节点的值
      */
-    void asInt(int value) {
+    private void asInt(int value, ValueContainer valueContainer) {
 
-        mValueIndex = mValueContainer.saveIntValue(value);
+        mValueIndex = valueContainer.saveIntValue(value);
         mType = VALUE_NUMBER_INT;
     }
 
@@ -344,6 +567,7 @@ class Node {
             try {
 
                 return mValueContainer.getIntValue(mValueIndex);
+
             } catch (Exception e) {
 
                 return JsonParser.errorNumber;
@@ -360,9 +584,9 @@ class Node {
      *
      * @param value 该节点的值
      */
-    void asLong(long value) {
+    private void asLong(long value, ValueContainer valueContainer) {
 
-        mValueIndex = mValueContainer.saveLongValue(value);
+        mValueIndex = valueContainer.saveLongValue(value);
         mType = VALUE_NUMBER_LONG;
     }
 
@@ -372,7 +596,7 @@ class Node {
      *
      * @return 该节点对应的 long 值
      */
-    long getLong() {
+    private long getLong() {
 
         if (mType == VALUE_NUMBER_LONG) {
 
@@ -395,9 +619,9 @@ class Node {
      *
      * @param value 该节点的值
      */
-    void asFloat(float value) {
+    private void asFloat(float value, ValueContainer valueContainer) {
 
-        mValueIndex = mValueContainer.saveFloatValue(value);
+        mValueIndex = valueContainer.saveFloatValue(value);
         mType = VALUE_NUMBER_FLOAT;
     }
 
@@ -407,13 +631,14 @@ class Node {
      *
      * @return 该节点对应的 float 值
      */
-    float getFloat() {
+    private float getFloat() {
 
         if (mType == VALUE_NUMBER_FLOAT) {
 
             try {
 
                 return mValueContainer.getFloatValue(mValueIndex);
+
             } catch (Exception e) {
 
                 return JsonParser.errorNumber;
@@ -430,9 +655,9 @@ class Node {
      *
      * @param value 该节点的值
      */
-    void asDouble(double value) {
+    private void asDouble(double value, ValueContainer valueContainer) {
 
-        mValueIndex = mValueContainer.saveDoubleValue(value);
+        mValueIndex = valueContainer.saveDoubleValue(value);
         mType = VALUE_NUMBER_DOUBLE;
     }
 
@@ -442,7 +667,7 @@ class Node {
      *
      * @return 该节点对应的 double 值
      */
-    double getDouble() {
+    private double getDouble() {
 
         if (mType == VALUE_NUMBER_DOUBLE) {
 
@@ -463,88 +688,100 @@ class Node {
 
     int numberInt() {
 
-        switch (mType) {
+        if (mType == VALUE_NUMBER_FLOAT) {
 
-            case VALUE_NUMBER_DOUBLE:
-                return (int) getDouble();
+            return (int) getFloat();
 
-            case VALUE_NUMBER_FLOAT:
-                return (int) getFloat();
+        } else if (mType == VALUE_NUMBER_INT) {
 
-            case VALUE_NUMBER_LONG:
-                return (int) getLong();
+            return getInt();
 
-            case VALUE_NUMBER_INT:
-                return getInt();
+        } else if (mType == VALUE_NUMBER_LONG) {
 
-            default:
-                return JsonParser.errorNumber;
+            return (int) getLong();
+
+        } else if (mType == VALUE_NUMBER_DOUBLE) {
+
+            return (int) getDouble();
+
+        } else {
+
+            return JsonParser.errorNumber;
         }
     }
 
 
     long numberLong() {
 
-        switch (mType) {
+        if (mType == VALUE_NUMBER_FLOAT) {
 
-            case VALUE_NUMBER_DOUBLE:
-                return (long) getDouble();
+            return (long) getFloat();
 
-            case VALUE_NUMBER_FLOAT:
-                return (long) getFloat();
+        } else if (mType == VALUE_NUMBER_INT) {
 
-            case VALUE_NUMBER_LONG:
-                return getLong();
+            return getInt();
 
-            case VALUE_NUMBER_INT:
-                return getInt();
+        } else if (mType == VALUE_NUMBER_LONG) {
 
-            default:
-                return JsonParser.errorNumber;
+            return getLong();
+
+        } else if (mType == VALUE_NUMBER_DOUBLE) {
+
+            return (long) getDouble();
+
+        } else {
+
+            return JsonParser.errorNumber;
         }
     }
 
 
     float numberFloat() {
 
-        switch (mType) {
+        if (mType == VALUE_NUMBER_FLOAT) {
 
-            case VALUE_NUMBER_DOUBLE:
-                return (float) getDouble();
+            return getFloat();
 
-            case VALUE_NUMBER_FLOAT:
-                return getFloat();
+        } else if (mType == VALUE_NUMBER_INT) {
 
-            case VALUE_NUMBER_LONG:
-                return getLong();
+            return getInt();
 
-            case VALUE_NUMBER_INT:
-                return getInt();
+        } else if (mType == VALUE_NUMBER_LONG) {
 
-            default:
-                return JsonParser.errorNumber;
+            return getLong();
+
+        } else if (mType == VALUE_NUMBER_DOUBLE) {
+
+            return (float) getDouble();
+
+        } else {
+
+            return JsonParser.errorNumber;
         }
     }
 
 
     double numberDouble() {
 
-        switch (mType) {
+        if (mType == VALUE_NUMBER_FLOAT) {
 
-            case VALUE_NUMBER_DOUBLE:
-                return getDouble();
+            return getFloat();
 
-            case VALUE_NUMBER_FLOAT:
-                return getFloat();
+        } else if (mType == VALUE_NUMBER_INT) {
 
-            case VALUE_NUMBER_LONG:
-                return getLong();
+            return getInt();
 
-            case VALUE_NUMBER_INT:
-                return getInt();
+        } else if (mType == VALUE_NUMBER_LONG) {
 
-            default:
-                return JsonParser.errorNumber;
+            return getLong();
+
+        } else if (mType == VALUE_NUMBER_DOUBLE) {
+
+            return getDouble();
+
+        } else {
+
+            return JsonParser.errorNumber;
         }
     }
 
