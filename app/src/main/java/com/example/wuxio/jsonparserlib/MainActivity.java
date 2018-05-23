@@ -6,7 +6,7 @@ import android.util.Log;
 
 import com.example.jsonparser.JsonParser;
 import com.example.jsonparser.ObjectNodeTree;
-import com.example.wuxio.jsonparserlib.json.TestJson;
+import com.example.wuxio.jsonparserlib.json.GankJson;
 
 import java.io.StringReader;
 
@@ -23,31 +23,27 @@ public class MainActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         super.setContentView(R.layout.activity_main);
-        initView();
+        sampleForParserUse();
     }
 
 
-    private void initView() {
+    private void sampleForParserUse() {
 
         JsonParser jsonParser = new JsonParser();
-        StringReader reader = new StringReader(TestJson.JSON);
+        StringReader reader = new StringReader(GankJson.JSON);
 
-        Log.i(TAG, "initView:" + TestJson.JSON);
+        Log.i(TAG, "sampleForParserUse:" + GankJson.JSON);
 
-        ObjectNodeTree tree = jsonParser.parse(reader);
-        String name = tree.getString("name");
-        Log.i(TAG, "initView:" + name);
-        int alexa = tree.getInt("alexa");
-        Log.i(TAG, "initView:" + alexa);
+        ObjectNodeTree jsonTree = jsonParser.parse(reader);
 
-        String string = tree.getObject("sites").getString("site1");
-        Log.i(TAG, "initView:" + string);
+        boolean error = jsonTree.getBoolean("error");
+        Log.i(TAG, "error : " + error);
 
-        String favorate = tree.getArray("favorate").getString(0);
-        Log.i(TAG, "initView:" + favorate);
+        String desc = jsonTree.getArray("results").getObject(0).getString("desc");
+        Log.i(TAG, "results[0].desc : " + desc);
 
-        int anInt = tree.getArray("groups").getObject(0).getInt("group");
-        Log.i(TAG, "initView:" + anInt);
+        String images_1 = jsonTree.getArray("results").getObject(0).getArray("images").getString(1);
 
+        Log.i(TAG, "results[0].images[1] : " + images_1);
     }
 }

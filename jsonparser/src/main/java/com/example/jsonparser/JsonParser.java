@@ -51,7 +51,7 @@ public class JsonParser {
 
     public static void setErrorNumber(int errorNumber) {
 
-        errorNumber = errorNumber;
+        JsonParser.errorNumber = errorNumber;
     }
 
     //============================ 解析Json ============================
@@ -198,7 +198,7 @@ public class JsonParser {
 
                             /* 上一步操作是BEGIN_ARRAY/TOKEN_VALUE ,说明当前节点是 json array; 并且它的元素都是值类型的 */
                             ArrayNodeTree array = currentNode.getArray();
-                            Node node = new Node(valueContainer, array);
+                            new Node(valueContainer, array);
                         }
 
                         lastToken = TOKEN_VALUE;
@@ -216,7 +216,7 @@ public class JsonParser {
 
                             /* 上一步操作是BEGIN_ARRAY/TOKEN_VALUE ,说明当前节点是 json array; 并且它的元素都是值类型的 */
                             ArrayNodeTree array = currentNode.getArray();
-                            Node node = new Node(valueContainer, array, string);
+                            new Node(valueContainer, array, string);
 
                         }
 
@@ -235,7 +235,7 @@ public class JsonParser {
 
                             /* 上一步操作是BEGIN_ARRAY/TOKEN_VALUE ,说明当前节点是 json array; 并且它的元素都是值类型的 */
                             ArrayNodeTree array = currentNode.getArray();
-                            Node node = new Node(valueContainer, array, booleanValue);
+                            new Node(valueContainer, array, booleanValue);
                         }
 
                         lastToken = TOKEN_VALUE;
@@ -253,7 +253,7 @@ public class JsonParser {
                             /* 上一步操作是BEGIN_ARRAY/TOKEN_VALUE ,说明当前节点是 json array; 并且它的元素都是值类型的 */
 
                             ArrayNodeTree array = currentNode.getArray();
-                            Node node = new Node(valueContainer,array,numberType,jsonReader);
+                            new Node(valueContainer, array, numberType, jsonReader);
 
                         }
 
