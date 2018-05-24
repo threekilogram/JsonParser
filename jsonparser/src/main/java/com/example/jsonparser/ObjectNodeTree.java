@@ -1,6 +1,6 @@
 package com.example.jsonparser;
 
-import android.support.v4.util.ArrayMap;
+import java.util.HashMap;
 
 /**
  * 对应json中object类型的节点
@@ -12,7 +12,7 @@ public class ObjectNodeTree implements NodeTree {
     /**
      * 保存json object中key和key对应的节点
      */
-    private ArrayMap< String, Node > mNodeMap = new ArrayMap<>();
+    private HashMap< String, Node > mNodeMap = new HashMap<>();
 
     /**
      * 当前 Object 对应的node,如果是对应整个json的ObjectNodeTree那么为null
@@ -29,18 +29,7 @@ public class ObjectNodeTree implements NodeTree {
     @Override
     public String toString() {
 
-        int size = mNodeMap.size();
-        StringBuilder stringBuilder = new StringBuilder();
-
-        stringBuilder.append("Object: ");
-
-        for (int i = 0; i < size; i++) {
-            String key = mNodeMap.keyAt(i);
-            Node node = mNodeMap.get(key);
-            stringBuilder.append(key).append(" : ").append(node.nodeValue()).append("; ");
-        }
-
-        return stringBuilder.toString();
+        return mNodeMap.toString();
     }
 
 

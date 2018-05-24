@@ -21,6 +21,7 @@ import com.example.objectbus.message.OnMessageReceiveListener;
 import com.example.wuxio.jsonparserlib.bean.GankBean;
 import com.example.wuxio.jsonparserlib.json.GankJson;
 
+import java.io.File;
 import java.io.StringReader;
 import java.util.Locale;
 
@@ -131,13 +132,13 @@ public class MainActivity extends AppCompatActivity implements OnMessageReceiveL
                 Gson gson = new Gson();
 
                 long start = System.currentTimeMillis();
-                for (int i = 0; i < 100000; i++) {
+                for (int i = 0; i < 10000; i++) {
 
                     GankBean bean = gson.fromJson(new StringReader(GankJson.JSON), GankBean.class);
 
-                    if (i % 1000 == 0) {
+                    if (i % 100 == 0) {
 
-                        int j = i / 1000;
+                        int j = i / 100;
                         Messengers.send(7, Integer.valueOf(j), MainActivity.this);
                     }
                 }
@@ -162,20 +163,23 @@ public class MainActivity extends AppCompatActivity implements OnMessageReceiveL
 
                 JsonParser parser = new JsonParser();
 
+                File trace = getExternalFilesDir("trace");
+
                 long start = System.currentTimeMillis();
-                for (int i = 0; i < 100000; i++) {
+                for (int i = 0; i < 10000; i++) {
 
                     StringReader reader = new StringReader(GankJson.JSON);
                     parser.parse(reader);
 
-                    if (i % 1000 == 0) {
+                    if (i % 100 == 0) {
 
-                        int j = i / 1000;
+                        int j = i / 100;
                         Messengers.send(7, Integer.valueOf(j), MainActivity.this);
                     }
                 }
                 long end = System.currentTimeMillis();
                 int cast = (int) (end - start);
+
                 Messengers.send(9, Integer.valueOf(cast), MainActivity.this);
 
                 BusStation.recycle(bus);
@@ -183,6 +187,7 @@ public class MainActivity extends AppCompatActivity implements OnMessageReceiveL
         }).run();
 
     }
+
 
     private void testFastJson() {
 
@@ -193,13 +198,13 @@ public class MainActivity extends AppCompatActivity implements OnMessageReceiveL
             public void run() {
 
                 long start = System.currentTimeMillis();
-                for (int i = 0; i < 100000; i++) {
+                for (int i = 0; i < 10000; i++) {
 
                     Object parse = JSONObject.parse(GankJson.JSON);
 
-                    if (i % 1000 == 0) {
+                    if (i % 100 == 0) {
 
-                        int j = i / 1000;
+                        int j = i / 100;
                         Messengers.send(7, Integer.valueOf(j), MainActivity.this);
                     }
                 }
@@ -212,6 +217,7 @@ public class MainActivity extends AppCompatActivity implements OnMessageReceiveL
         }).run();
 
     }
+
 
     private void closeDrawer() {
 
