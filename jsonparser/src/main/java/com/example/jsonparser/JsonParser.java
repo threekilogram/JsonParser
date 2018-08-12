@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * 通过{@link JsonReader}各个步骤的分解,达到解析json的目的
+ *
  * @author: Liujin
  * @version: V1.0
  * @date: 2018-08-12
@@ -1084,5 +1086,16 @@ public class JsonParser {
                 || token == JsonToken.NULL
                 || token == JsonToken.BEGIN_ARRAY
                 || token == JsonToken.BEGIN_OBJECT;
+      }
+
+      /**
+       * 当读取 json 类数组时,可以使用这个方法,在开始解析数组后{@link #readArray(String)},判断是否有更多元素
+       *
+       * @return true: 还有json类元素没有读完
+       */
+      public boolean hasNext ( ) throws IOException {
+
+            JsonToken peek = mJsonReader.peek();
+            return peek == JsonToken.BEGIN_OBJECT;
       }
 }

@@ -5,7 +5,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.FrameLayout;
 import com.example.jsonparser.JsonParser;
-import com.example.jsonparser.JsonParserTTT;
 import com.example.wuxio.jsonparserlib.json.GankJson;
 import com.example.wuxio.jsonparserlib.json.TestJson;
 import java.io.IOException;
@@ -19,8 +18,7 @@ public class MainActivity extends AppCompatActivity {
 
       private static final String TAG = MainActivity.class.getSimpleName();
 
-      private FrameLayout   mRoot;
-      private JsonParserTTT mParser;
+      private FrameLayout mRoot;
 
       @Override
       protected void onCreate ( Bundle savedInstanceState ) {
@@ -28,11 +26,21 @@ public class MainActivity extends AppCompatActivity {
             super.onCreate( savedInstanceState );
             setContentView( R.layout.activity_main );
 
-            mParser = new JsonParserTTT();
             initView();
 
             try {
-                  skipToString();
+                  testBuilder();
+            } catch(IOException e) {
+                  e.printStackTrace();
+            }
+            try {
+                  testJson();
+            } catch(IOException e) {
+                  e.printStackTrace();
+            }
+
+            try {
+                  testJsonSkip();
             } catch(IOException e) {
                   e.printStackTrace();
             }
@@ -40,80 +48,47 @@ public class MainActivity extends AppCompatActivity {
 
       private void initView ( ) {
 
-            mRoot = (FrameLayout) findViewById( R.id.root );
-
-            //mParser.parse( new StringReader( GankJson.JSON ) );
+            mRoot = findViewById( R.id.root );
       }
 
-      private void skipToString ( ) throws IOException {
+      private void testBuilder ( ) throws IOException {
 
-            StringReader reader = new StringReader( TestJson.Json );
+            JsonParser builder = new JsonParser();
 
-            JsonParser parser = new JsonParser();
-            parser.start( reader );
-            parser.skipToString( "skipString" );
-            parser.peek();
-            String skipString = parser.readString( "skipString" );
-            log( "skipString", skipString );
-            parser.finish();
-      }
+            builder.start( new StringReader( GankJson.JSON ) );
+            boolean error = builder.readBoolean( "error", false );
+            log( "error", error );
 
-      private void log ( String key, Object value ) {
+            builder.readArray( "results" );
 
-            Log.e( TAG, "log : " + key + " : " + value );
-      }
+            for( int i = 0; i < 2; i++ ) {
 
-      private void skipToObject ( ) throws IOException {
-
-            StringReader reader = new StringReader( TestJson.Json );
-
-            JsonParser parser = new JsonParser();
-            parser.start( reader );
-            parser.skipToObject( "object" );
-            parser.peek();
-            parser.readObject( "object" );
-            String name = parser.readString( "name" );
-            log( "name", name );
-            parser.skipToEndObject();
-            parser.peek();
-            parser.finish();
-      }
-
-      private void skipToArray ( ) throws IOException {
-
-            StringReader reader = new StringReader( TestJson.Json );
-
-            JsonParser parser = new JsonParser();
-            parser.start( reader );
-            parser.skipToArray( "objectArray" );
-            parser.peek();
-            parser.readArray( "objectArray" );
-            for( int i = 0; i < 3; i++ ) {
-                  parser.beginObject();
-                  String name2 = parser.readString( "name" );
-                  log( "name", name2 );
-                  int age1 = parser.readInt( "age" );
-                  log( "age", age1 );
-                  parser.endObject();
+                  builder.beginObject();
+                  String id = builder.readString( "_id" );
+                  log( "_id", id );
+                  String createdAt = builder.readString( "createdAt" );
+                  log( "createAt", createdAt );
+                  String desc = builder.readString( "desc" );
+                  log( "desc", desc );
+                  List<String> images = builder.readStringArray( "images" );
+                  log( "images", images );
+                  String publishedAt = builder.readString( "publishedAt" );
+                  log( "publishedAt", publishedAt );
+                  String source = builder.readString( "source" );
+                  log( "source", source );
+                  String type = builder.readString( "type" );
+                  log( "type", type );
+                  String url = builder.readString( "url" );
+                  log( "url", url );
+                  boolean used = builder.readBoolean( "used", true );
+                  log( "used", used );
+                  String who = builder.readString( "who" );
+                  log( "who", who );
+                  builder.endObject();
             }
-            parser.endArray();
-            parser.finish();
-      }
 
-      private void skipToEndObject ( ) throws IOException {
-
-            StringReader reader = new StringReader( TestJson.Json );
-
-            JsonParser parser = new JsonParser();
-            parser.start( reader );
-            String name = parser.readString( "name" );
-            log( "name", name );
-            parser.skipToEndObject();
-            Log.e( TAG, "skipToEndObject : end" );
-            int anInt = parser.readInt( "int" );
-            log( "int", anInt );
-            parser.peek();
-            parser.finish();
+            builder.endArray();
+            builder.finish();
       }
 
       private void testJson ( ) throws IOException {
@@ -163,41 +138,80 @@ public class MainActivity extends AppCompatActivity {
             parser.finish();
       }
 
-      private void testBuilder ( ) throws IOException {
+      private void testJsonSkip ( ) throws IOException {
 
-            JsonParser builder = new JsonParser();
+            JsonParser parser = new JsonParser();
 
-            builder.start( new StringReader( GankJson.JSON ) );
-            boolean error = builder.readBoolean( "error", false );
-            log( "error", error );
-            builder.readArray( "results" );
+            StringReader reader = new StringReader( TestJson.Json );
+            parser.start( reader );
 
-            for( int i = 0; i < 2; i++ ) {
+            parser.skipToString( "skipString" );
+            String string = parser.readString( "skipString" );
+            log( "skipString", string );
 
-                  builder.beginObject();
-                  String id = builder.readString( "_id" );
-                  log( "_id", id );
-                  String createdAt = builder.readString( "createdAt" );
-                  log( "createAt", createdAt );
-                  String desc = builder.readString( "desc" );
-                  log( "desc", desc );
-                  List<String> images = builder.readStringArray( "images" );
-                  log( "images", images );
-                  String publishedAt = builder.readString( "publishedAt" );
-                  log( "publishedAt", publishedAt );
-                  String source = builder.readString( "source" );
-                  log( "source", source );
-                  String type = builder.readString( "type" );
-                  log( "type", type );
-                  String url = builder.readString( "url" );
-                  log( "url", url );
-                  boolean used = builder.readBoolean( "used", true );
-                  log( "used", used );
-                  String who = builder.readString( "who" );
-                  log( "who", who );
-                  builder.endObject();
+            parser.skipToNumber( "skipInt" );
+            int skipInt = parser.readInt( "skipInt" );
+            log( "skipInt", skipInt );
+
+            parser.skipToNumber( "skipLong" );
+            long skipLong = parser.readLong( "skipLong" );
+            log( "skipLong", skipLong );
+
+            parser.skipToNumber( "skipDouble" );
+            double skipDouble = parser.readDouble( "skipDouble" );
+            log( "skipDouble", skipDouble );
+
+            parser.skipToBoolean( "skipBoolean" );
+            boolean skipBoolean = parser.readBoolean( "skipBoolean" );
+            log( "skipBoolean", skipBoolean );
+
+            parser.skipToArray( "skipStringArray" );
+            List<String> skipStringArray = parser.readStringArray( "skipStringArray" );
+            log( "skipStringArray", skipStringArray );
+
+            parser.skipToArray( "skipIntArray" );
+            int[] skipIntArrays = parser.readIntArray( "skipIntArray" );
+            log( "skipIntArray", skipIntArrays );
+
+            parser.skipToArray( "skipLongArray" );
+            long[] skipLongArrays = parser.readLongArray( "skipLongArray" );
+            log( "skipLongArray", skipLongArrays );
+
+            parser.skipToArray( "skipDoubleArray" );
+            double[] skipDoubleArrays = parser.readDoubleArray( "skipDoubleArray" );
+            log( "skipDoubleArray", skipDoubleArrays );
+
+            parser.skipToArray( "skipBooleanArray" );
+            boolean[] skipBooleanArrays = parser.readBooleanArray( "skipBooleanArray" );
+            log( "skipBooleanArray", skipBooleanArrays );
+
+            parser.skipToObject( "skipObject" );
+            parser.readObject( "skipObject" );
+            String name = parser.readString( "name" );
+            log( "name", name );
+            int age = parser.readInt( "age" );
+            log( "age", age );
+            parser.endObject();
+
+            parser.skipToArray( "skipObjectArray" );
+            parser.readArray( "skipObjectArray" );
+
+            while( parser.hasNext() ) {
+
+                  parser.beginObject();
+                  String name1 = parser.readString( "name" );
+                  log( "name", name1 );
+                  int age1 = parser.readInt( "age" );
+                  log( "age", age1 );
+                  parser.endObject();
             }
-            builder.endArray();
-            builder.finish();
+
+            parser.endArray();
+            parser.finish();
+      }
+
+      private void log ( String key, Object value ) {
+
+            Log.e( TAG, "log : " + key + " : " + value );
       }
 }
