@@ -7,166 +7,140 @@ import java.util.List;
  */
 public class GankBean {
 
+      private boolean           error;
+      private List<ResultsBean> results;
 
-    private boolean             error;
-    private List< ResultsBean > results;
+      public boolean isError ( ) {
 
+            return error;
+      }
 
-    public boolean isError() {
+      public void setError ( boolean error ) {
 
-        return error;
-    }
+            this.error = error;
+      }
 
+      public List<ResultsBean> getResults ( ) {
 
-    public void setError(boolean error) {
+            return results;
+      }
 
-        this.error = error;
-    }
+      public void setResults ( List<ResultsBean> results ) {
 
+            this.results = results;
+      }
 
-    public List< ResultsBean > getResults() {
+      public static class ResultsBean {
 
-        return results;
-    }
+            private String       _id;
+            private String       createdAt;
+            private String       desc;
+            private String       publishedAt;
+            private String       source;
+            private String       type;
+            private String       url;
+            private boolean      used;
+            private String       who;
+            private List<String> images;
 
+            public String get_id ( ) {
 
-    public void setResults(List< ResultsBean > results) {
+                  return _id;
+            }
 
-        this.results = results;
-    }
+            public void set_id ( String _id ) {
 
+                  this._id = _id;
+            }
 
-    public static class ResultsBean {
+            public String getCreatedAt ( ) {
 
-        private String         _id;
-        private String         createdAt;
-        private String         desc;
-        private String         publishedAt;
-        private String         source;
-        private String         type;
-        private String         url;
-        private boolean        used;
-        private String         who;
-        private List< String > images;
+                  return createdAt;
+            }
 
+            public void setCreatedAt ( String createdAt ) {
 
-        public String get_id() {
+                  this.createdAt = createdAt;
+            }
 
-            return _id;
-        }
+            public String getDesc ( ) {
 
+                  return desc;
+            }
 
-        public void set_id(String _id) {
+            public void setDesc ( String desc ) {
 
-            this._id = _id;
-        }
+                  this.desc = desc;
+            }
 
+            public String getPublishedAt ( ) {
 
-        public String getCreatedAt() {
+                  return publishedAt;
+            }
 
-            return createdAt;
-        }
+            public void setPublishedAt ( String publishedAt ) {
 
+                  this.publishedAt = publishedAt;
+            }
 
-        public void setCreatedAt(String createdAt) {
+            public String getSource ( ) {
 
-            this.createdAt = createdAt;
-        }
+                  return source;
+            }
 
+            public void setSource ( String source ) {
 
-        public String getDesc() {
+                  this.source = source;
+            }
 
-            return desc;
-        }
+            public String getType ( ) {
 
+                  return type;
+            }
 
-        public void setDesc(String desc) {
+            public void setType ( String type ) {
 
-            this.desc = desc;
-        }
+                  this.type = type;
+            }
 
+            public String getUrl ( ) {
 
-        public String getPublishedAt() {
+                  return url;
+            }
 
-            return publishedAt;
-        }
+            public void setUrl ( String url ) {
 
+                  this.url = url;
+            }
 
-        public void setPublishedAt(String publishedAt) {
+            public boolean isUsed ( ) {
 
-            this.publishedAt = publishedAt;
-        }
+                  return used;
+            }
 
+            public void setUsed ( boolean used ) {
 
-        public String getSource() {
+                  this.used = used;
+            }
 
-            return source;
-        }
+            public String getWho ( ) {
 
+                  return who;
+            }
 
-        public void setSource(String source) {
+            public void setWho ( String who ) {
 
-            this.source = source;
-        }
+                  this.who = who;
+            }
 
+            public List<String> getImages ( ) {
 
-        public String getType() {
+                  return images;
+            }
 
-            return type;
-        }
+            public void setImages ( List<String> images ) {
 
-
-        public void setType(String type) {
-
-            this.type = type;
-        }
-
-
-        public String getUrl() {
-
-            return url;
-        }
-
-
-        public void setUrl(String url) {
-
-            this.url = url;
-        }
-
-
-        public boolean isUsed() {
-
-            return used;
-        }
-
-
-        public void setUsed(boolean used) {
-
-            this.used = used;
-        }
-
-
-        public String getWho() {
-
-            return who;
-        }
-
-
-        public void setWho(String who) {
-
-            this.who = who;
-        }
-
-
-        public List< String > getImages() {
-
-            return images;
-        }
-
-
-        public void setImages(List< String > images) {
-
-            this.images = images;
-        }
-    }
+                  this.images = images;
+            }
+      }
 }

@@ -1,226 +1,203 @@
 package com.example.wuxio.jsonparserlib;
 
-import com.google.gson.Gson;
-
 import android.os.Bundle;
-import android.support.design.widget.NavigationView;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.Gravity;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-
-import com.alibaba.fastjson.JSONObject;
+import android.widget.FrameLayout;
 import com.example.jsonparser.JsonParser;
-import com.example.jsonparser.ObjectNodeTree;
-import com.example.objectbus.bus.BusStation;
-import com.example.objectbus.bus.ObjectBus;
-import com.example.objectbus.message.Messengers;
-import com.example.objectbus.message.OnMessageReceiveListener;
-import com.example.wuxio.jsonparserlib.bean.GankBean;
+import com.example.jsonparser.JsonParserTTT;
 import com.example.wuxio.jsonparserlib.json.GankJson;
-
-import java.io.File;
+import com.example.wuxio.jsonparserlib.json.TestJson;
+import java.io.IOException;
 import java.io.StringReader;
-import java.util.Locale;
+import java.util.List;
 
 /**
- * @author wuxio
+ * @author liujin
  */
-public class MainActivity extends AppCompatActivity implements OnMessageReceiveListener {
+public class MainActivity extends AppCompatActivity {
 
-    private static final String TAG = "MainActivity";
+      private static final String TAG = MainActivity.class.getSimpleName();
 
-    protected TextView       mText00;
-    protected TextView       mText01;
-    protected LinearLayout   mContainer;
-    protected NavigationView mNavigationView;
-    protected DrawerLayout   mDrawer;
+      private FrameLayout   mRoot;
+      private JsonParserTTT mParser;
 
+      @Override
+      protected void onCreate ( Bundle savedInstanceState ) {
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
+            super.onCreate( savedInstanceState );
+            setContentView( R.layout.activity_main );
 
-        super.onCreate(savedInstanceState);
-        super.setContentView(R.layout.activity_main);
-        sampleForParserUse();
-        initView();
-    }
+            mParser = new JsonParserTTT();
+            initView();
 
-
-    private void sampleForParserUse() {
-
-        JsonParser jsonParser = new JsonParser();
-        StringReader reader = new StringReader(GankJson.JSON);
-
-        Log.i(TAG, "sampleForParserUse:" + GankJson.JSON);
-
-        ObjectNodeTree jsonTree = jsonParser.parse(reader);
-
-        boolean error = jsonTree.getBoolean("error");
-        Log.i(TAG, "error : " + error);
-
-        String desc = jsonTree.getArray("results").getObject(0).getString("desc");
-        Log.i(TAG, "results[0].desc : " + desc);
-
-        String images_1 = jsonTree.getArray("results").getObject(0).getArray("images").getString(1);
-
-        Log.i(TAG, "results[0].images[1] : " + images_1);
-    }
-
-
-    private void initView() {
-
-        mText00 = findViewById(R.id.text00);
-        mText01 = findViewById(R.id.text01);
-        mContainer = findViewById(R.id.container);
-        mNavigationView = findViewById(R.id.navigationView);
-        mDrawer = findViewById(R.id.drawer);
-
-        mNavigationView.setNavigationItemSelectedListener(item -> {
-
-            switch (item.getItemId()) {
-
-                case R.id.menu00:
-                    testGson();
-                    break;
-
-                case R.id.menu01:
-                    testFastJson();
-                    break;
-
-                case R.id.menu02:
-                    testParser();
-                    break;
-                default:
-                    break;
+            try {
+                  skipToString();
+            } catch(IOException e) {
+                  e.printStackTrace();
             }
+      }
 
-            closeDrawer();
-            return true;
-        });
-    }
+      private void initView ( ) {
 
+            mRoot = (FrameLayout) findViewById( R.id.root );
 
-    @Override
-    public void onReceive(int what, Object extra) {
+            //mParser.parse( new StringReader( GankJson.JSON ) );
+      }
 
-        if (what == 7) {
+      private void skipToString ( ) throws IOException {
 
-            int i = ((Integer) extra);
-            String text = String.format(Locale.CHINA, "%d%%", i);
-            mText00.setText(text);
+            StringReader reader = new StringReader( TestJson.Json );
 
-        } else if (what == 9) {
+            JsonParser parser = new JsonParser();
+            parser.start( reader );
+            parser.skipToString( "skipString" );
+            parser.peek();
+            String skipString = parser.readString( "skipString" );
+            log( "skipString", skipString );
+            parser.finish();
+      }
 
-            int i = ((Integer) extra);
-            String text = String.format(Locale.CHINA, "耗时 : %d", i);
-            mText01.setText(text);
-        }
-    }
+      private void log ( String key, Object value ) {
 
+            Log.e( TAG, "log : " + key + " : " + value );
+      }
 
-    private void testGson() {
+      private void skipToObject ( ) throws IOException {
 
-        ObjectBus bus = BusStation.callNewBus();
+            StringReader reader = new StringReader( TestJson.Json );
 
-        bus.toUnder(new Runnable() {
-            @Override
-            public void run() {
+            JsonParser parser = new JsonParser();
+            parser.start( reader );
+            parser.skipToObject( "object" );
+            parser.peek();
+            parser.readObject( "object" );
+            String name = parser.readString( "name" );
+            log( "name", name );
+            parser.skipToEndObject();
+            parser.peek();
+            parser.finish();
+      }
 
-                Gson gson = new Gson();
+      private void skipToArray ( ) throws IOException {
 
-                long start = System.currentTimeMillis();
-                for (int i = 0; i < 10000; i++) {
+            StringReader reader = new StringReader( TestJson.Json );
 
-                    GankBean bean = gson.fromJson(new StringReader(GankJson.JSON), GankBean.class);
-
-                    if (i % 100 == 0) {
-
-                        int j = i / 100;
-                        Messengers.send(7, Integer.valueOf(j), MainActivity.this);
-                    }
-                }
-                long end = System.currentTimeMillis();
-                int cast = (int) (end - start);
-                Messengers.send(9, Integer.valueOf(cast), MainActivity.this);
-
-                BusStation.recycle(bus);
+            JsonParser parser = new JsonParser();
+            parser.start( reader );
+            parser.skipToArray( "objectArray" );
+            parser.peek();
+            parser.readArray( "objectArray" );
+            for( int i = 0; i < 3; i++ ) {
+                  parser.beginObject();
+                  String name2 = parser.readString( "name" );
+                  log( "name", name2 );
+                  int age1 = parser.readInt( "age" );
+                  log( "age", age1 );
+                  parser.endObject();
             }
-        }).run();
+            parser.endArray();
+            parser.finish();
+      }
 
-    }
+      private void skipToEndObject ( ) throws IOException {
 
+            StringReader reader = new StringReader( TestJson.Json );
 
-    private void testParser() {
+            JsonParser parser = new JsonParser();
+            parser.start( reader );
+            String name = parser.readString( "name" );
+            log( "name", name );
+            parser.skipToEndObject();
+            Log.e( TAG, "skipToEndObject : end" );
+            int anInt = parser.readInt( "int" );
+            log( "int", anInt );
+            parser.peek();
+            parser.finish();
+      }
 
-        ObjectBus bus = BusStation.callNewBus();
+      private void testJson ( ) throws IOException {
 
-        bus.toUnder(new Runnable() {
-            @Override
-            public void run() {
+            StringReader reader = new StringReader( TestJson.Json );
 
-                JsonParser parser = new JsonParser();
-
-                File trace = getExternalFilesDir("trace");
-
-                long start = System.currentTimeMillis();
-                for (int i = 0; i < 10000; i++) {
-
-                    StringReader reader = new StringReader(GankJson.JSON);
-                    parser.parse(reader);
-
-                    if (i % 100 == 0) {
-
-                        int j = i / 100;
-                        Messengers.send(7, Integer.valueOf(j), MainActivity.this);
-                    }
-                }
-                long end = System.currentTimeMillis();
-                int cast = (int) (end - start);
-
-                Messengers.send(9, Integer.valueOf(cast), MainActivity.this);
-
-                BusStation.recycle(bus);
+            JsonParser parser = new JsonParser();
+            parser.start( reader );
+            String name = parser.readString( "name" );
+            log( "name", name );
+            int anInt = parser.readInt( "int" );
+            log( "int", anInt );
+            long aLong = parser.readLong( "long" );
+            log( "long", aLong );
+            double aDouble = parser.readDouble( "double" );
+            log( "double", aDouble );
+            boolean aBoolean = parser.readBoolean( "boolean" );
+            log( "boolean", aBoolean );
+            String empty = parser.readString( "empty" );
+            log( "empty", empty );
+            List<String> stringArray = parser.readStringArray( "stringArray" );
+            log( "stringArray", stringArray );
+            int[] intArrays = parser.readIntArray( "intArray" );
+            log( "intArray", intArrays[ 0 ] );
+            long[] longArrays = parser.readLongArray( "longArray" );
+            log( "longArray", longArrays[ 0 ] );
+            double[] doubleArrays = parser.readDoubleArray( "doubleArray" );
+            log( "doubleArray", doubleArrays[ 0 ] );
+            boolean[] booleanArrays = parser.readBooleanArray( "booleanArray" );
+            log( "booleanArray", booleanArrays[ 1 ] );
+            parser.readObject( "object" );
+            String name1 = parser.readString( "name" );
+            log( "name", name1 );
+            int age = parser.readInt( "age" );
+            log( "age", age );
+            parser.endObject();
+            parser.readArray( "objectArray" );
+            for( int i = 0; i < 3; i++ ) {
+                  parser.beginObject();
+                  String name2 = parser.readString( "name" );
+                  log( "name", name2 );
+                  int age1 = parser.readInt( "age" );
+                  log( "age", age1 );
+                  parser.endObject();
             }
-        }).run();
+            parser.endArray();
+            parser.finish();
+      }
 
-    }
+      private void testBuilder ( ) throws IOException {
 
+            JsonParser builder = new JsonParser();
 
-    private void testFastJson() {
+            builder.start( new StringReader( GankJson.JSON ) );
+            boolean error = builder.readBoolean( "error", false );
+            log( "error", error );
+            builder.readArray( "results" );
 
-        ObjectBus bus = BusStation.callNewBus();
+            for( int i = 0; i < 2; i++ ) {
 
-        bus.toUnder(new Runnable() {
-            @Override
-            public void run() {
-
-                long start = System.currentTimeMillis();
-                for (int i = 0; i < 10000; i++) {
-
-                    Object parse = JSONObject.parse(GankJson.JSON);
-
-                    if (i % 100 == 0) {
-
-                        int j = i / 100;
-                        Messengers.send(7, Integer.valueOf(j), MainActivity.this);
-                    }
-                }
-                long end = System.currentTimeMillis();
-                int cast = (int) (end - start);
-                Messengers.send(9, Integer.valueOf(cast), MainActivity.this);
-
-                BusStation.recycle(bus);
+                  builder.beginObject();
+                  String id = builder.readString( "_id" );
+                  log( "_id", id );
+                  String createdAt = builder.readString( "createdAt" );
+                  log( "createAt", createdAt );
+                  String desc = builder.readString( "desc" );
+                  log( "desc", desc );
+                  List<String> images = builder.readStringArray( "images" );
+                  log( "images", images );
+                  String publishedAt = builder.readString( "publishedAt" );
+                  log( "publishedAt", publishedAt );
+                  String source = builder.readString( "source" );
+                  log( "source", source );
+                  String type = builder.readString( "type" );
+                  log( "type", type );
+                  String url = builder.readString( "url" );
+                  log( "url", url );
+                  boolean used = builder.readBoolean( "used", true );
+                  log( "used", used );
+                  String who = builder.readString( "who" );
+                  log( "who", who );
+                  builder.endObject();
             }
-        }).run();
-
-    }
-
-
-    private void closeDrawer() {
-
-        mDrawer.closeDrawer(Gravity.START);
-    }
+            builder.endArray();
+            builder.finish();
+      }
 }
