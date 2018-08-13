@@ -3,6 +3,28 @@
 
 封装 JaonReader,分解它解析步骤达到在解析过程中插入操作的目的
 
+### 引入
+
+**Step 1.** Add the JitPack repository to your build file
+
+Add it in your root build.gradle at the end of repositories:
+
+```
+	allprojects {
+		repositories {
+			maven { url 'https://jitpack.io' }
+		}
+	}
+```
+
+**Step 2.** Add the dependency
+
+```
+	dependencies {
+	        implementation 'com.github.threekilogram:JsonParser:3.0'
+	}
+```
+
 ## 示例
 
 #### json数据
@@ -279,7 +301,7 @@ parser.finish();
 }
 ```
 
-####　解析
+#### 解析
 
 > 以上的解析方式都是全部属性解析，如果不需要全部解析可以使用带`skip`的方法直接跳转到一个节点读取属性
 
