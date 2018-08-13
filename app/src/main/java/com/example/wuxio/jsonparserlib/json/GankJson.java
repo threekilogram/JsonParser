@@ -5,6 +5,11 @@ package com.example.wuxio.jsonparserlib.json;
  */
 public class GankJson {
 
+      public static void main ( String[] args ) {
+
+            System.out.println( JSON );
+      }
+
       public static final String JSON = "{\n"
           + "    \"error\": false,\n"
           + "    \"results\": [\n"

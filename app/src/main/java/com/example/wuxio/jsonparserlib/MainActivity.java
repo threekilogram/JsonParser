@@ -2,6 +2,7 @@ package com.example.wuxio.jsonparserlib;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.JsonToken;
 import android.util.Log;
 import android.widget.FrameLayout;
 import com.example.jsonparser.JsonParser;
@@ -53,85 +54,101 @@ public class MainActivity extends AppCompatActivity {
 
       private void testBuilder ( ) throws IOException {
 
+            //创建
             JsonParser builder = new JsonParser();
 
+            //传入流
             builder.start( new StringReader( GankJson.JSON ) );
-            boolean error = builder.readBoolean( "error", false );
-            log( "error", error );
 
+            //读取第一个boolean值
+            boolean error = builder.readBoolean( "error", false );
+
+            //开始读取json类组成的数组节点
             builder.readArray( "results" );
 
+            //循环解析json数组中的json类
             for( int i = 0; i < 2; i++ ) {
 
+                  //因为元素是一个json类,所以需要beginObject()
                   builder.beginObject();
+
+                  //按照json中出现顺序读取所有属性
                   String id = builder.readString( "_id" );
-                  log( "_id", id );
                   String createdAt = builder.readString( "createdAt" );
-                  log( "createAt", createdAt );
                   String desc = builder.readString( "desc" );
-                  log( "desc", desc );
+
+                  //读取string数组
                   List<String> images = builder.readStringArray( "images" );
-                  log( "images", images );
+
                   String publishedAt = builder.readString( "publishedAt" );
-                  log( "publishedAt", publishedAt );
                   String source = builder.readString( "source" );
-                  log( "source", source );
                   String type = builder.readString( "type" );
-                  log( "type", type );
                   String url = builder.readString( "url" );
-                  log( "url", url );
                   boolean used = builder.readBoolean( "used", true );
-                  log( "used", used );
                   String who = builder.readString( "who" );
-                  log( "who", who );
+
+                  //读取完成之后结束类
                   builder.endObject();
             }
 
+            //结束读取json类组成的数组节点
             builder.endArray();
+
+            //结束整个流的解析
             builder.finish();
       }
 
       private void testJson ( ) throws IOException {
 
+            //创建json数据流
             StringReader reader = new StringReader( TestJson.Json );
-
+            //创建解析
             JsonParser parser = new JsonParser();
+            //开始解析流
             parser.start( reader );
+            //需要按照json中出现顺序解析
+            //读取string节点
             String name = parser.readString( "name" );
-            log( "name", name );
+            //读取int节点
             int anInt = parser.readInt( "int" );
-            log( "int", anInt );
+            //读取long节点
             long aLong = parser.readLong( "long" );
-            log( "long", aLong );
+            //读取double节点
             double aDouble = parser.readDouble( "double" );
-            log( "double", aDouble );
+            //读取boolean节点
             boolean aBoolean = parser.readBoolean( "boolean" );
-            log( "boolean", aBoolean );
+            //读取null节点,
             String empty = parser.readString( "empty" );
-            log( "empty", empty );
+            //读取string array 节点
             List<String> stringArray = parser.readStringArray( "stringArray" );
-            log( "stringArray", stringArray );
+            //读取int array 节点
             int[] intArrays = parser.readIntArray( "intArray" );
-            log( "intArray", intArrays[ 0 ] );
+            //读取long array 节点
             long[] longArrays = parser.readLongArray( "longArray" );
-            log( "longArray", longArrays[ 0 ] );
+            //读取double array 节点
             double[] doubleArrays = parser.readDoubleArray( "doubleArray" );
-            log( "doubleArray", doubleArrays[ 0 ] );
+            //读取boolean array 节点
             boolean[] booleanArrays = parser.readBooleanArray( "booleanArray" );
-            log( "booleanArray", booleanArrays[ 1 ] );
+            // 开始读取一个json类
             parser.readObject( "object" );
+            // 读取json类,string节点
             String name1 = parser.readString( "name" );
-            log( "name", name1 );
+            // 读取json类,int节点
             int age = parser.readInt( "age" );
-            log( "age", age );
+            // 结束读取json类
             parser.endObject();
+            // 开始读取json类组成的数组
             parser.readArray( "objectArray" );
             for( int i = 0; i < 3; i++ ) {
                   parser.beginObject();
-                  String name2 = parser.readString( "name" );
-                  log( "name", name2 );
-                  int age1 = parser.readInt( "age" );
-                  log( "age", age1 );
+
+                  while( parser.peek() != JsonToken.END_OBJECT ) {
+
+                        String name2 = parser.readString( "name" );
+                        log( "name", name2 );
+                        int age1 = parser.readInt( "age" );
+                        log( "age", age1 );
+                  }
                   parser.endObject();
             }
             parser.endArray();
@@ -145,6 +162,9 @@ public class MainActivity extends AppCompatActivity {
             StringReader reader = new StringReader( TestJson.Json );
             parser.start( reader );
 
+            //跳转到指定名称的节点
+            parser.skipToNode( "skipString" );
+            //跳转到"skipString"
             parser.skipToString( "skipString" );
             String string = parser.readString( "skipString" );
             log( "skipString", string );

@@ -5,6 +5,11 @@ package com.example.wuxio.jsonparserlib.json;
  */
 public class TestJson {
 
+      public static void main ( String[] args ) {
+
+            System.out.println( Json );
+      }
+
       public static final String Json = "{\n"
           + "\t\"name\": \"菜鸟教程\",\n"
           + "\t\"int\": 12,\n"

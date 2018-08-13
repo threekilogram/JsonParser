@@ -29,6 +29,11 @@ public class JsonParser {
 
       public JsonParser ( ) { }
 
+      /**
+       * 返回下一个节点的类型{@link JsonToken},同时不消耗节点
+       *
+       * @return 节点类型, 可以根据下一个节点类型判断操作
+       */
       public JsonToken peek ( ) throws IOException {
 
             return mJsonReader.peek();
@@ -42,6 +47,18 @@ public class JsonParser {
       public void start ( Reader reader ) throws IOException {
 
             mJsonReader = new JsonReader( reader );
+            beginObject();
+      }
+
+      /**
+       * 开始解析,使用宽容模式{@link JsonReader#setLenient(boolean)}
+       *
+       * @param reader 读取json的reader
+       */
+      public void startLenient ( Reader reader ) throws IOException {
+
+            mJsonReader = new JsonReader( reader );
+            mJsonReader.setLenient( true );
             beginObject();
       }
 
@@ -126,19 +143,80 @@ public class JsonParser {
       }
 
       /**
+       * 工具方法
+       */
+      public void skipToNode ( final String nodeName )
+          throws IOException {
+
+            JsonReader jsonReader = mJsonReader;
+
+            JsonToken peek = jsonReader.peek();
+            while( peek != JsonToken.END_DOCUMENT ) {
+
+                  switch( peek ) {
+
+                        case BEGIN_OBJECT:
+                              jsonReader.beginObject();
+                              break;
+
+                        case BEGIN_ARRAY:
+                              jsonReader.beginArray();
+                              break;
+
+                        case NAME:
+                              String name = jsonReader.nextName();
+                              if( nodeName.equals( name ) ) {
+
+                                    return;
+                              }
+                              break;
+
+                        case NULL:
+                              jsonReader.nextNull();
+                              break;
+
+                        case STRING:
+                              jsonReader.nextString();
+                              break;
+
+                        case BOOLEAN:
+                              jsonReader.nextBoolean();
+                              break;
+
+                        case NUMBER:
+                              jsonReader.nextDouble();
+                              break;
+
+                        case END_ARRAY:
+                              jsonReader.endArray();
+                              break;
+
+                        case END_OBJECT:
+                              jsonReader.endObject();
+                              break;
+
+                        default:
+                              break;
+                  }
+
+                  peek = jsonReader.peek();
+            }
+      }
+
+      /**
        * 直接跳到节点位置,然后可以使用{@link #readObject(String)}读取
        *
        * @param nodeName 节点名
        */
       public void skipToObject ( String nodeName ) throws IOException {
 
-            skipToNode( nodeName, JsonToken.BEGIN_OBJECT );
+            skipToValueNode( nodeName, JsonToken.BEGIN_OBJECT );
       }
 
       /**
        * 工具方法
        */
-      private void skipToNode ( final String nodeName, final JsonToken tokenWhich )
+      private void skipToValueNode ( final String nodeName, final JsonToken tokenWhich )
           throws IOException {
 
             JsonReader jsonReader = mJsonReader;
@@ -321,7 +399,7 @@ public class JsonParser {
        */
       public void skipToArray ( String nodeName ) throws IOException {
 
-            skipToNode( nodeName, JsonToken.BEGIN_ARRAY );
+            skipToValueNode( nodeName, JsonToken.BEGIN_ARRAY );
       }
 
       /**
@@ -373,7 +451,7 @@ public class JsonParser {
        */
       public void skipToString ( String nodeName ) throws IOException {
 
-            skipToNode( nodeName, JsonToken.STRING );
+            skipToValueNode( nodeName, JsonToken.STRING );
       }
 
       /**
@@ -497,7 +575,7 @@ public class JsonParser {
        */
       public void skipToNumber ( String nodeName ) throws IOException {
 
-            skipToNode( nodeName, JsonToken.NUMBER );
+            skipToValueNode( nodeName, JsonToken.NUMBER );
       }
 
       /**
@@ -907,7 +985,7 @@ public class JsonParser {
        */
       public void skipToBoolean ( String nodeName ) throws IOException {
 
-            skipToNode( nodeName, JsonToken.BOOLEAN );
+            skipToValueNode( nodeName, JsonToken.BOOLEAN );
       }
 
       /**
