@@ -1,4 +1,4 @@
-package com.example.wuxio.jsonparserlib.bean;
+package com.threekilogram.wuxio.jsonparserlib.bean;
 
 import java.util.List;
 

@@ -1,8 +1,8 @@
-package com.example.wuxio.jsonparserlib;
-
-import org.junit.Test;
+package com.threekilogram.jsonparser;
 
 import static org.junit.Assert.*;
+
+import org.junit.Test;
 
 /**
  * Example local unit test, which will execute on the development machine (host).

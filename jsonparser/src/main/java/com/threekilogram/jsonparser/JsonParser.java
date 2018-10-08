@@ -1,4 +1,4 @@
-package com.example.jsonparser;
+package com.threekilogram.jsonparser;
 
 import android.support.annotation.Nullable;
 import android.util.JsonReader;

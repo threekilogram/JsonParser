@@ -1,4 +1,4 @@
-package com.example.wuxio.jsonparserlib.json;
+package com.threekilogram.wuxio.jsonparserlib.json;
 
 /**
  * @author wuxio 2018-05-15:11:51

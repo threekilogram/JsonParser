@@ -1,13 +1,13 @@
-package com.example.wuxio.jsonparserlib;
+package com.threekilogram.wuxio.jsonparserlib;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.JsonToken;
 import android.util.Log;
 import android.widget.FrameLayout;
-import com.example.jsonparser.JsonParser;
-import com.example.wuxio.jsonparserlib.json.GankJson;
-import com.example.wuxio.jsonparserlib.json.TestJson;
+import com.threekilogram.jsonparser.JsonParser;
+import com.threekilogram.wuxio.jsonparserlib.json.GankJson;
+import com.threekilogram.wuxio.jsonparserlib.json.TestJson;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.List;
@@ -29,19 +29,36 @@ public class MainActivity extends AppCompatActivity {
 
             initView();
 
-            try {
-                  testBuilder();
-            } catch(IOException e) {
-                  e.printStackTrace();
-            }
-            try {
-                  testJson();
-            } catch(IOException e) {
-                  e.printStackTrace();
-            }
+//            try {
+//                  testBuilder();
+//            } catch(IOException e) {
+//                  e.printStackTrace();
+//            }
+//            try {
+//                  testJson();
+//            } catch(IOException e) {
+//                  e.printStackTrace();
+//            }
+//
+//            try {
+//                  testJsonSkip();
+//            } catch(IOException e) {
+//                  e.printStackTrace();
+//            }
 
+            testBigSkip();
+      }
+
+      private void testBigSkip ( ) {
+
+            JsonParser jsonParser = new JsonParser();
             try {
-                  testJsonSkip();
+                  jsonParser.start( new StringReader( GankJson.BEAUTY_JSON ) );
+                  while( jsonParser.peek() != JsonToken.END_DOCUMENT ) {
+                        jsonParser.skipToString( "url" );
+                        String url = jsonParser.readString( "url" );
+                        Log.e( TAG, "testBigSkip : " + url );
+                  }
             } catch(IOException e) {
                   e.printStackTrace();
             }
