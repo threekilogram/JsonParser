@@ -51,9 +51,9 @@ public class MainActivity extends AppCompatActivity {
 
       private void testBigSkip ( ) {
 
-            JsonParser jsonParser = new JsonParser();
+            JsonParser jsonParser = new JsonParser( new StringReader( GankJson.BEAUTY_JSON ) );
             try {
-                  jsonParser.start( new StringReader( GankJson.BEAUTY_JSON ) );
+                  jsonParser.start();
                   while( jsonParser.peek() != JsonToken.END_DOCUMENT ) {
                         jsonParser.skipToString( "url" );
                         String url = jsonParser.readString( "url" );
@@ -72,10 +72,10 @@ public class MainActivity extends AppCompatActivity {
       private void testBuilder ( ) throws IOException {
 
             //创建
-            JsonParser builder = new JsonParser();
+            JsonParser builder = new JsonParser( new StringReader( GankJson.JSON ) );
 
             //传入流
-            builder.start( new StringReader( GankJson.JSON ) );
+            builder.start();
 
             //读取第一个boolean值
             boolean error = builder.readBoolean( "error", false );
@@ -120,9 +120,9 @@ public class MainActivity extends AppCompatActivity {
             //创建json数据流
             StringReader reader = new StringReader( TestJson.Json );
             //创建解析
-            JsonParser parser = new JsonParser();
+            JsonParser parser = new JsonParser( reader );
             //开始解析流
-            parser.start( reader );
+            parser.start();
             //需要按照json中出现顺序解析
             //读取string节点
             String name = parser.readString( "name" );
@@ -174,10 +174,10 @@ public class MainActivity extends AppCompatActivity {
 
       private void testJsonSkip ( ) throws IOException {
 
-            JsonParser parser = new JsonParser();
-
             StringReader reader = new StringReader( TestJson.Json );
-            parser.start( reader );
+            JsonParser parser = new JsonParser( reader );
+
+            parser.start();
 
             //跳转到指定名称的节点
             parser.skipToNode( "skipString" );

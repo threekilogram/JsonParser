@@ -27,7 +27,10 @@ public class JsonParser {
        */
       private String     mNotConsumedNodeName;
 
-      public JsonParser ( ) { }
+      public JsonParser ( Reader reader ) {
+
+            mJsonReader = new JsonReader( reader );
+      }
 
       /**
        * 返回下一个节点的类型{@link JsonToken},同时不消耗节点
@@ -39,25 +42,16 @@ public class JsonParser {
             return mJsonReader.peek();
       }
 
-      /**
-       * 开始解析
-       *
-       * @param reader 读取json的reader
-       */
-      public void start ( Reader reader ) throws IOException {
+      public void start ( ) throws IOException {
 
-            mJsonReader = new JsonReader( reader );
             beginObject();
       }
 
       /**
        * 开始解析,使用宽容模式{@link JsonReader#setLenient(boolean)}
-       *
-       * @param reader 读取json的reader
        */
-      public void startLenient ( Reader reader ) throws IOException {
+      public void startLenient ( ) throws IOException {
 
-            mJsonReader = new JsonReader( reader );
             mJsonReader.setLenient( true );
             beginObject();
       }
