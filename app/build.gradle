@@ -4,7 +4,7 @@ android {
     compileSdkVersion 27
     defaultConfig {
         applicationId "com.example.wuxio.jsonparserlib"
-        minSdkVersion 14
+        minSdkVersion 19
         targetSdkVersion 27
         versionCode 1
         versionName "1.0"
@@ -29,6 +29,8 @@ dependencies {
     implementation project(':jsonparser')
     implementation 'com.google.code.gson:gson:2.8.5'
     implementation 'com.alibaba:fastjson:1.1.68.android'
+    implementation 'com.github.threekilogram:AndroidModel:2.1.0'
+    implementation 'com.github.threekilogram:ObjectBus:2.2.8'
 }
 
 repositories {

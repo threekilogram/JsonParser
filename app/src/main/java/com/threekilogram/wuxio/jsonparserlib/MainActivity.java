@@ -4,13 +4,25 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.JsonToken;
 import android.util.Log;
+import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.Toast;
+import com.google.gson.Gson;
 import com.threekilogram.jsonparser.JsonParser;
+import com.threekilogram.objectbus.executor.MainExecutor;
+import com.threekilogram.objectbus.executor.PoolExecutor;
+import com.threekilogram.wuxio.jsonparserlib.bean.GankBean;
 import com.threekilogram.wuxio.jsonparserlib.json.GankJson;
 import com.threekilogram.wuxio.jsonparserlib.json.TestJson;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.io.StringReader;
 import java.util.List;
+import tech.threekilogram.model.net.Downer;
 
 /**
  * @author liujin
@@ -20,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
       private static final String TAG = MainActivity.class.getSimpleName();
 
       private FrameLayout mRoot;
+      private File        mTemp;
 
       @Override
       protected void onCreate ( Bundle savedInstanceState ) {
@@ -28,6 +41,18 @@ public class MainActivity extends AppCompatActivity {
             setContentView( R.layout.activity_main );
 
             initView();
+
+            PoolExecutor.execute( ( ) -> {
+                  final String url = String
+                      .format( "https://gank.io/api/data/Android/%d/1", Integer.MAX_VALUE );
+                  File json = getExternalFilesDir( "Json" );
+                  mTemp = new File( json, "temp.json" );
+                  Downer.down( url, mTemp );
+
+                  MainExecutor.execute(
+                      ( ) -> Toast.makeText( MainActivity.this, "下载bean完成", Toast.LENGTH_SHORT )
+                                  .show() );
+            } );
       }
 
       private void testBigSkip ( ) {
@@ -233,5 +258,35 @@ public class MainActivity extends AppCompatActivity {
             Log.e( TAG, "log : " + key + " : " + value );
       }
 
+      public void parser ( View view ) {
 
+            Gson gson = new Gson();
+            try {
+                  Reader reader = new InputStreamReader( new FileInputStream( mTemp ) );
+                  long l = System.currentTimeMillis();
+                  GankBean gankBean = gson.fromJson( reader, GankBean.class );
+                  long l1 = System.currentTimeMillis();
+
+                  Toast.makeText( this, "耗时 " + ( l1 - l ), Toast.LENGTH_SHORT ).show();
+            } catch(FileNotFoundException e) {
+                  e.printStackTrace();
+            }
+      }
+
+      public void test ( View view ) {
+
+            try {
+                  Reader reader = new InputStreamReader( new FileInputStream( mTemp ) );
+                  JsonParser parser = new JsonParser( reader );
+                  long l = System.currentTimeMillis();
+                  parser.start();
+                  parser.finish();
+                  long l1 = System.currentTimeMillis();
+                  Toast.makeText( this, "耗时 " + ( l1 - l ), Toast.LENGTH_SHORT ).show();
+            } catch(FileNotFoundException e) {
+                  e.printStackTrace();
+            } catch(IOException e) {
+                  e.printStackTrace();
+            }
+      }
 }
