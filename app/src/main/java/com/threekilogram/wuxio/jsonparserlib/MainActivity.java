@@ -28,25 +28,6 @@ public class MainActivity extends AppCompatActivity {
             setContentView( R.layout.activity_main );
 
             initView();
-
-//            try {
-//                  testBuilder();
-//            } catch(IOException e) {
-//                  e.printStackTrace();
-//            }
-//            try {
-//                  testJson();
-//            } catch(IOException e) {
-//                  e.printStackTrace();
-//            }
-//
-//            try {
-//                  testJsonSkip();
-//            } catch(IOException e) {
-//                  e.printStackTrace();
-//            }
-
-            testBigSkip();
       }
 
       private void testBigSkip ( ) {
@@ -251,4 +232,6 @@ public class MainActivity extends AppCompatActivity {
 
             Log.e( TAG, "log : " + key + " : " + value );
       }
+
+
 }
