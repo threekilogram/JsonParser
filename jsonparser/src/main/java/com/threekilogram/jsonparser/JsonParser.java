@@ -1,6 +1,5 @@
 package com.threekilogram.jsonparser;
 
-import android.support.annotation.Nullable;
 import android.util.JsonReader;
 import android.util.JsonToken;
 import java.io.IOException;
@@ -480,7 +479,6 @@ public class JsonParser {
             return null;
       }
 
-      @Nullable
       private String getString ( ) throws IOException {
 
             JsonToken peek = mJsonReader.peek();
@@ -531,7 +529,6 @@ public class JsonParser {
       /**
        * 读取string[]值
        */
-      @Nullable
       private List<String> getStrings ( ) throws IOException {
 
             JsonToken peek;
