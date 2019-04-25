@@ -14,7 +14,7 @@
           android:theme="@style/AppTheme"
           tools:ignore="GoogleAppIndexingWarning">
 
-            <activity android:name="com.threekilogram.wuxio.jsonparserlib.MainActivity">
+            <activity android:name="com.threekilogram.wuxio.jsonparserlib.tech.threekilogram.wuxio.jsonparserlib.MainActivity">
 
                   <intent-filter>
                         <action android:name="android.intent.action.MAIN"/>
