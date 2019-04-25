@@ -2,7 +2,7 @@
 ## Json 解析
 
 ```
-implementation 'tech.liujin:jsonparser:1.0.0'
+implementation 'tech.liujin:jsonParser:1.0.1'
 ```
 
 ## 示例
