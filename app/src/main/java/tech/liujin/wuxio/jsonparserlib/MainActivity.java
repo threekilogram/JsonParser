@@ -8,7 +8,6 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 import com.google.gson.Gson;
-import com.threekilogram.wuxio.jsonparserlib.R;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;

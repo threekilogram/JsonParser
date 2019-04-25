@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.threekilogram.wuxio.jsonparserlib">
+    package="tech.liujin.wuxio.jsonparserlib">
 
       <uses-permission android:name="android.permission.INTERNET"/>
 
@@ -14,7 +14,7 @@
           android:theme="@style/AppTheme"
           tools:ignore="GoogleAppIndexingWarning">
 
-            <activity android:name="com.threekilogram.wuxio.jsonparserlib.tech.threekilogram.wuxio.jsonparserlib.MainActivity">
+            <activity android:name="tech.liujin.wuxio.jsonparserlib.MainActivity">
 
                   <intent-filter>
                         <action android:name="android.intent.action.MAIN"/>
