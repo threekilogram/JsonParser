@@ -1,4 +1,4 @@
-package tech.liujin.wuxio.jsonparserlib.bean;
+package tech.liujin.wuxio.jsonparserlib.json;
 
 /**
  * @author Liujin 2019/4/18:13:19:42

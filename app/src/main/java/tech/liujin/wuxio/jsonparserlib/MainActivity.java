@@ -17,8 +17,8 @@ import java.io.StringReader;
 import java.util.List;
 import tech.liujin.json.JsonParser;
 import tech.liujin.wuxio.jsonparserlib.bean.GankBean;
-import tech.liujin.wuxio.jsonparserlib.bean.JSONString;
 import tech.liujin.wuxio.jsonparserlib.json.GankJson;
+import tech.liujin.wuxio.jsonparserlib.json.JSONString;
 import tech.liujin.wuxio.jsonparserlib.json.TestJson;
 
 /**
